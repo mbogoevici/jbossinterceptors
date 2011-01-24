@@ -14,32 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.interceptor.instantiation;
 
-package org.jboss.interceptor.util;
-
-import org.jboss.interceptor.exceptions.InterceptorException;
+import org.jboss.interceptor.metadata.InterceptorReference;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class InterceptorMetadataException extends InterceptorException
-{
-   public InterceptorMetadataException()
-   {
-   }
+public interface InterceptorInstantiator<T, I> {
 
-   public InterceptorMetadataException(String s)
-   {
-      super(s);
-   }
-
-   public InterceptorMetadataException(String s, Throwable throwable)
-   {
-      super(s, throwable);
-   }
-
-   public InterceptorMetadataException(Throwable throwable)
-   {
-      super(throwable);
-   }
+    T createFor(InterceptorReference<I> interceptorReference);
 }

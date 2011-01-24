@@ -15,40 +15,19 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.util;
+package org.jboss.interceptor.invocation;
 
-import java.util.Iterator;
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
-import org.jboss.interceptor.metadata.MethodMetadata;
+import javax.interceptor.InvocationContext;
 
 /**
-* @author Marius Bogoevici
-*/
-public abstract class ImmutableIteratorWrapper<T> implements Iterator<MethodMetadata>
+ * @author Marius Bogoevici
+ */
+public interface InvocationContextFactory extends Serializable
 {
+   InvocationContext newInvocationContext(InterceptionChain chain, Object o, Method method, Object[] args);
 
-   private Iterator<T> originalIterator;
-
-   protected ImmutableIteratorWrapper(Iterator<T> originalIterator)
-   {
-      this.originalIterator = originalIterator;
-   }
-
-
-   public boolean hasNext()
-   {
-      return originalIterator.hasNext();
-   }
-
-   public MethodMetadata next()
-   {
-      return wrapObject(originalIterator.next());
-   }
-
-   protected abstract MethodMetadata wrapObject(T t);
-
-   public void remove()
-   {
-      throw new UnsupportedOperationException("Removal not supported");
-   }
+   InvocationContext newInvocationContext(InterceptionChain chain, Object o, Method method, Object timer);
 }

@@ -15,40 +15,18 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.util;
+package org.jboss.interceptor.invocation;
 
-import java.util.Iterator;
-
-import org.jboss.interceptor.metadata.MethodMetadata;
+import javax.interceptor.InvocationContext;
 
 /**
-* @author Marius Bogoevici
-*/
-public abstract class ImmutableIteratorWrapper<T> implements Iterator<MethodMetadata>
+ * A chain of instantiated interceptors, applicable to a given invocation.
+ *
+ * @author Marius Bogoevici
+ */
+public interface InterceptionChain
 {
+   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
 
-   private Iterator<T> originalIterator;
-
-   protected ImmutableIteratorWrapper(Iterator<T> originalIterator)
-   {
-      this.originalIterator = originalIterator;
-   }
-
-
-   public boolean hasNext()
-   {
-      return originalIterator.hasNext();
-   }
-
-   public MethodMetadata next()
-   {
-      return wrapObject(originalIterator.next());
-   }
-
-   protected abstract MethodMetadata wrapObject(T t);
-
-   public void remove()
-   {
-      throw new UnsupportedOperationException("Removal not supported");
-   }
+   boolean hasNextInterceptor();
 }

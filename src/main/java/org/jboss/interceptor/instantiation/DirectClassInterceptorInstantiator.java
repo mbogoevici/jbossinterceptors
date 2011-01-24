@@ -15,31 +15,35 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.util;
+package org.jboss.interceptor.instantiation;
 
 import org.jboss.interceptor.exceptions.InterceptorException;
+import org.jboss.interceptor.metadata.ClassMetadata;
+import org.jboss.interceptor.metadata.InterceptorReference;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class InterceptorMetadataException extends InterceptorException
+public class DirectClassInterceptorInstantiator implements InterceptorInstantiator<Object, ClassMetadata<?>>
 {
-   public InterceptorMetadataException()
+
+   public DirectClassInterceptorInstantiator()
    {
    }
 
-   public InterceptorMetadataException(String s)
+   public Object createFor(InterceptorReference<ClassMetadata<?>> clazz)
    {
-      super(s);
-   }
-
-   public InterceptorMetadataException(String s, Throwable throwable)
-   {
-      super(s, throwable);
-   }
-
-   public InterceptorMetadataException(Throwable throwable)
-   {
-      super(throwable);
+      try
+      {
+         return clazz.getInterceptor().getJavaClass().newInstance();
+      }
+      catch (InstantiationException e)
+      {
+         throw new InterceptorException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new InterceptorException(e);
+      }
    }
 }

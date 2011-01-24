@@ -1,16 +1,16 @@
 package org.jboss.interceptor.customInvocationContext;
 
 import junit.framework.Assert;
-import org.jboss.interceptor.builder.InterceptionModelBuilder;
-import org.jboss.interceptor.proxy.DirectClassInterceptorInstantiator;
-import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
-import org.jboss.interceptor.reader.ReflectiveClassMetadata;
-import org.jboss.interceptor.reader.cache.DefaultMetadataCachingReader;
-import org.jboss.interceptor.spi.context.InterceptionChain;
-import org.jboss.interceptor.spi.context.InvocationContextFactory;
-import org.jboss.interceptor.spi.instance.InterceptorInstantiator;
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.interceptor.spi.model.InterceptionModel;
+import org.jboss.interceptor.model.InterceptionModelBuilder;
+import org.jboss.interceptor.invocation.InterceptionChain;
+import org.jboss.interceptor.invocation.InvocationContextFactory;
+import org.jboss.interceptor.instantiation.DirectClassInterceptorInstantiator;
+import org.jboss.interceptor.javassist.InterceptorProxyCreatorImpl;
+import org.jboss.interceptor.metadata.ReflectiveClassMetadata;
+import org.jboss.interceptor.reader.DefaultMetadataCachingReader;
+import org.jboss.interceptor.instantiation.InterceptorInstantiator;
+import org.jboss.interceptor.metadata.ClassMetadata;
+import org.jboss.interceptor.model.InterceptionModel;
 import org.junit.Before;
 import org.junit.Test;
 

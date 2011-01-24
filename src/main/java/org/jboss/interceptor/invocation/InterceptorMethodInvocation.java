@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2011, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -15,40 +15,37 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.util;
+package org.jboss.interceptor.invocation;
 
-import java.util.Iterator;
+import javax.interceptor.InvocationContext;
 
 import org.jboss.interceptor.metadata.MethodMetadata;
 
 /**
 * @author Marius Bogoevici
 */
-public abstract class ImmutableIteratorWrapper<T> implements Iterator<MethodMetadata>
+public class InterceptorMethodInvocation<T>
 {
+   T instance;
 
-   private Iterator<T> originalIterator;
+   MethodMetadata method;
 
-   protected ImmutableIteratorWrapper(Iterator<T> originalIterator)
+   InterceptorMethodInvocation(T instance, MethodMetadata method)
    {
-      this.originalIterator = originalIterator;
+      this.instance = instance;
+      this.method = method;
    }
 
-
-   public boolean hasNext()
+   Object invoke(InvocationContext invocationContext) throws Exception
    {
-      return originalIterator.hasNext();
+      if (invocationContext != null)
+         return method.getJavaMethod().invoke(instance, invocationContext);
+      else
+         return method.getJavaMethod().invoke(instance);
    }
 
-   public MethodMetadata next()
+   public MethodMetadata getMethod()
    {
-      return wrapObject(originalIterator.next());
-   }
-
-   protected abstract MethodMetadata wrapObject(T t);
-
-   public void remove()
-   {
-      throw new UnsupportedOperationException("Removal not supported");
+      return method;
    }
 }

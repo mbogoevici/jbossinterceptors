@@ -17,15 +17,15 @@
 
 package org.jboss.interceptor.reentrant;
 
-import org.jboss.interceptor.builder.InterceptionModelBuilder;
-import org.jboss.interceptor.proxy.DefaultInvocationContextFactory;
-import org.jboss.interceptor.proxy.DirectClassInterceptorInstantiator;
-import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
-import org.jboss.interceptor.reader.ReflectiveClassMetadata;
-import org.jboss.interceptor.reader.cache.DefaultMetadataCachingReader;
-import org.jboss.interceptor.reader.cache.MetadataCachingReader;
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.interceptor.spi.model.InterceptionModel;
+import org.jboss.interceptor.model.InterceptionModelBuilder;
+import org.jboss.interceptor.invocation.DefaultInvocationContextFactory;
+import org.jboss.interceptor.instantiation.DirectClassInterceptorInstantiator;
+import org.jboss.interceptor.metadata.ReflectiveClassMetadata;
+import org.jboss.interceptor.javassist.InterceptorProxyCreatorImpl;
+import org.jboss.interceptor.reader.MetadataCachingReader;
+import org.jboss.interceptor.reader.DefaultMetadataCachingReader;
+import org.jboss.interceptor.metadata.ClassMetadata;
+import org.jboss.interceptor.model.InterceptionModel;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -14,41 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.interceptor.metadata;
 
-package org.jboss.interceptor.util;
-
-import java.util.Iterator;
-
-import org.jboss.interceptor.metadata.MethodMetadata;
+import java.io.Serializable;
 
 /**
-* @author Marius Bogoevici
-*/
-public abstract class ImmutableIteratorWrapper<T> implements Iterator<MethodMetadata>
+ * Defines a minimal contract for an interceptor reference. Allows different types
+ * of interceptors to be used at the same time (classes, CDI interceptors)
+ */
+public interface InterceptorReference<I> extends Serializable
 {
+   I getInterceptor();
 
-   private Iterator<T> originalIterator;
-
-   protected ImmutableIteratorWrapper(Iterator<T> originalIterator)
-   {
-      this.originalIterator = originalIterator;
-   }
-
-
-   public boolean hasNext()
-   {
-      return originalIterator.hasNext();
-   }
-
-   public MethodMetadata next()
-   {
-      return wrapObject(originalIterator.next());
-   }
-
-   protected abstract MethodMetadata wrapObject(T t);
-
-   public void remove()
-   {
-      throw new UnsupportedOperationException("Removal not supported");
-   }
+   ClassMetadata<?> getClassMetadata();
 }

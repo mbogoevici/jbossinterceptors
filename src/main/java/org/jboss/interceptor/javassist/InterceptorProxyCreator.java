@@ -15,31 +15,19 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.util;
+package org.jboss.interceptor.javassist;
 
-import org.jboss.interceptor.exceptions.InterceptorException;
+import javassist.util.proxy.MethodHandler;
+import org.jboss.interceptor.metadata.ClassMetadata;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class InterceptorMetadataException extends InterceptorException
+public interface InterceptorProxyCreator
 {
-   public InterceptorMetadataException()
-   {
-   }
 
-   public InterceptorMetadataException(String s)
-   {
-      super(s);
-   }
+   <T> MethodHandler createMethodHandler(Object target, ClassMetadata<T> proxyClass);
 
-   public InterceptorMetadataException(String s, Throwable throwable)
-   {
-      super(s, throwable);
-   }
+   <T> MethodHandler createSubclassingMethodHandler(Object targetInstance, ClassMetadata<T> proxyClass);
 
-   public InterceptorMetadataException(Throwable throwable)
-   {
-      super(throwable);
-   }
 }

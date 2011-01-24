@@ -15,40 +15,26 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.util;
+package org.jboss.interceptor.reader;
 
-import java.util.Iterator;
-
-import org.jboss.interceptor.metadata.MethodMetadata;
+import org.jboss.interceptor.metadata.ClassMetadata;
+import org.jboss.interceptor.metadata.InterceptorMetadata;
+import org.jboss.interceptor.metadata.InterceptorReference;
 
 /**
-* @author Marius Bogoevici
-*/
-public abstract class ImmutableIteratorWrapper<T> implements Iterator<MethodMetadata>
+ *@author: Marius Bogoevici
+ */
+public interface MetadataCachingReader
 {
+   <T> InterceptorMetadata<T> getInterceptorMetadata(InterceptorReference<T> interceptorReference);
 
-   private Iterator<T> originalIterator;
+   <T> InterceptorMetadata<T> getTargetClassInterceptorMetadata(ClassMetadata<T> classMetadata);
 
-   protected ImmutableIteratorWrapper(Iterator<T> originalIterator)
-   {
-      this.originalIterator = originalIterator;
-   }
+   <T> InterceptorMetadata<T> getInterceptorMetadata(Class<T> clazz);
 
+   <T> InterceptorMetadata<T> getTargetClassInterceptorMetadata(Class<T> clazz);
 
-   public boolean hasNext()
-   {
-      return originalIterator.hasNext();
-   }
+   <T> ClassMetadata<T> getClassMetadata(Class<T> clazz);
 
-   public MethodMetadata next()
-   {
-      return wrapObject(originalIterator.next());
-   }
-
-   protected abstract MethodMetadata wrapObject(T t);
-
-   public void remove()
-   {
-      throw new UnsupportedOperationException("Removal not supported");
-   }
+   <T> InterceptorMetadata<T> getInterceptorMetadata(ClassMetadata<T> clazz);
 }

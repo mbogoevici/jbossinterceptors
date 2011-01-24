@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.interceptor.spi.model.InterceptionType;
+import org.jboss.interceptor.model.InterceptionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

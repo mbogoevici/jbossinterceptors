@@ -22,12 +22,9 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.jboss.interceptor.reader.cache.DefaultMetadataCachingReader;
-import org.jboss.interceptor.reader.cache.MetadataCachingReader;
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
-import org.jboss.interceptor.spi.metadata.MethodMetadata;
-import org.jboss.interceptor.spi.model.InterceptionType;
+import org.jboss.interceptor.reader.DefaultMetadataCachingReader;
+import org.jboss.interceptor.reader.MetadataCachingReader;
+import org.jboss.interceptor.model.InterceptionType;
 import org.jboss.interceptor.util.InterceptorMetadataException;
 import org.junit.Test;
 

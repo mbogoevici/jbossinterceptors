@@ -24,20 +24,17 @@ import java.util.concurrent.Callable;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
-import org.jboss.interceptor.proxy.InterceptorException;
-import org.jboss.interceptor.proxy.LifecycleMixin;
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.interceptor.spi.model.InterceptionType;
-import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.interceptor.exceptions.InterceptorException;
+import org.jboss.interceptor.javassist.LifecycleMixin;
+import org.jboss.interceptor.javassist.TargetInstanceProxy;
+import org.jboss.interceptor.metadata.ClassMetadata;
+import org.jboss.interceptor.model.InterceptionType;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public class InterceptionUtils
 {
-   public static final String POST_CONSTRUCT = "lifecycle_mixin_$$_postConstruct";
-   public static final String PRE_DESTROY = "lifecycle_mixin_$$_preDestroy";
-
 
    private static Class<? extends Annotation> INTERCEPTORS_ANNOTATION_CLASS = null;
    private static Class<? extends Annotation> EXCLUDE_CLASS_INTERCEPTORS_ANNOTATION_CLASS = null;

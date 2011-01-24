@@ -24,14 +24,14 @@ import javax.interceptor.InvocationContext;
 
 import junit.framework.Assert;
 
-import org.jboss.interceptor.proxy.DefaultInvocationContextFactory;
-import org.jboss.interceptor.proxy.InterceptorInvocation;
-import org.jboss.interceptor.proxy.SimpleInterceptionChain;
-import org.jboss.interceptor.reader.cache.DefaultMetadataCachingReader;
-import org.jboss.interceptor.reader.cache.MetadataCachingReader;
-import org.jboss.interceptor.spi.context.InterceptionChain;
-import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
-import org.jboss.interceptor.spi.model.InterceptionType;
+import org.jboss.interceptor.invocation.DefaultInvocationContextFactory;
+import org.jboss.interceptor.invocation.InterceptionChain;
+import org.jboss.interceptor.invocation.InterceptorInvocation;
+import org.jboss.interceptor.invocation.SimpleInterceptionChain;
+import org.jboss.interceptor.reader.DefaultMetadataCachingReader;
+import org.jboss.interceptor.reader.MetadataCachingReader;
+import org.jboss.interceptor.metadata.InterceptorMetadata;
+import org.jboss.interceptor.model.InterceptionType;
 import org.junit.Test;
 
 /**

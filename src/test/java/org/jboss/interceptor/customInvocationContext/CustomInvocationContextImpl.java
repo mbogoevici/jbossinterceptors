@@ -2,8 +2,8 @@ package org.jboss.interceptor.customInvocationContext;
 
 import java.lang.reflect.Method;
 
-import org.jboss.interceptor.proxy.InterceptorInvocationContext;
-import org.jboss.interceptor.spi.context.InterceptionChain;
+import org.jboss.interceptor.invocation.InterceptionChain;
+import org.jboss.interceptor.invocation.InterceptorInvocationContext;
 
 public class CustomInvocationContextImpl  extends InterceptorInvocationContext implements CustomInvocationContext
 {

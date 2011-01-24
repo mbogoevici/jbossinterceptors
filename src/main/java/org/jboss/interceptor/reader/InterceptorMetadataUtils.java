@@ -11,12 +11,14 @@ import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
-import org.jboss.interceptor.builder.MethodReference;
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
-import org.jboss.interceptor.spi.metadata.InterceptorReference;
-import org.jboss.interceptor.spi.metadata.MethodMetadata;
-import org.jboss.interceptor.spi.model.InterceptionType;
+import org.jboss.interceptor.metadata.ClassMetadataInterceptorReference;
+import org.jboss.interceptor.metadata.MethodReference;
+import org.jboss.interceptor.metadata.ClassMetadata;
+import org.jboss.interceptor.metadata.InterceptorMetadata;
+import org.jboss.interceptor.metadata.InterceptorReference;
+import org.jboss.interceptor.metadata.MethodMetadata;
+import org.jboss.interceptor.metadata.SimpleInterceptorMetadata;
+import org.jboss.interceptor.model.InterceptionType;
 import org.jboss.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.interceptor.util.InterceptorMetadataException;
 import org.jboss.interceptor.util.ReflectionUtils;
@@ -181,7 +183,7 @@ public class InterceptorMetadataUtils
          }
          currentClass = currentClass.getSuperclass();
       }
-      while (currentClass != null && !OBJECT_CLASS_NAME.equals(currentClass.getJavaClass()));
+      while (currentClass != null && !OBJECT_CLASS_NAME.equals(currentClass.getClassName()));
       return methodMap;
    }
 }
