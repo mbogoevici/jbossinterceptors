@@ -14,19 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.interceptor.interceptionchain;
 
-package org.jboss.interceptor.spi.context;
-
+import javax.annotation.PostConstruct;
 import javax.interceptor.InvocationContext;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
+ * SimpleInterceptor
  *
- * @author Marius Bogoevici
+ * @author Jaikiran Pai
+ * @version $Revision: $
  */
-public interface InterceptionChain
+public class SimpleInterceptor
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
 
-   boolean hasNextInterceptor();
+   private boolean postConstructInvoked;
+   
+   @PostConstruct
+   private void onConstruct(InvocationContext ctx) throws Exception
+   {
+      this.postConstructInvoked = true;
+      ctx.proceed();
+   }
+   
+   public boolean wasPostConstructInvoked()
+   {
+      return this.postConstructInvoked;
+   }
 }

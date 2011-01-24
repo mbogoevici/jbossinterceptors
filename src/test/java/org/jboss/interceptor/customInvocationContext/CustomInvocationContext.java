@@ -14,19 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.jboss.interceptor.spi.context;
+package org.jboss.interceptor.customInvocationContext;
 
 import javax.interceptor.InvocationContext;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
- *
+ * 
  * @author Marius Bogoevici
  */
-public interface InterceptionChain
+public interface CustomInvocationContext extends InvocationContext
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
 
-   boolean hasNextInterceptor();
+   public boolean isCustom();
 }

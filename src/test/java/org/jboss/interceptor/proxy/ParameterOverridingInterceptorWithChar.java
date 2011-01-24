@@ -15,18 +15,23 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.spi.context;
+package org.jboss.interceptor.proxy;
 
+import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
- *
  * @author Marius Bogoevici
  */
-public interface InterceptionChain
+public class ParameterOverridingInterceptorWithChar
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
-
-   boolean hasNextInterceptor();
+   @AroundInvoke
+   public Object overrideParameters(InvocationContext invocationContext) throws Exception
+   {
+      if (invocationContext.getMethod().getName().equals("echoChar"))
+      {
+         invocationContext.setParameters(new Character[]{'z'});
+      }
+      return invocationContext.proceed();
+   }
 }

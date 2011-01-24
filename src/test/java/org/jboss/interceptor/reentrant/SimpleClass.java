@@ -15,18 +15,39 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.spi.context;
-
-import javax.interceptor.InvocationContext;
+package org.jboss.interceptor.reentrant;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
- *
  * @author Marius Bogoevici
  */
-public interface InterceptionChain
+public class SimpleClass
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
+   private int tries;
 
-   boolean hasNextInterceptor();
+   private int maxTries;
+
+   public SimpleClass(int maxTries)
+   {
+      this.maxTries = maxTries;
+      tries = 0;
+   }
+
+   public int getTries()
+   {
+      return tries;
+   }
+
+   public int getMaxTries()
+   {
+      return maxTries;
+   }
+    
+   public void doSomething()
+   {
+      if (++tries < maxTries)
+      {
+         throw new RuntimeException();
+      }
+   }
+
 }

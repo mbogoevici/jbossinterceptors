@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -15,18 +15,22 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.spi.context;
-
-import javax.interceptor.InvocationContext;
+package org.jboss.interceptor.proxy;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
- *
  * @author Marius Bogoevici
  */
-public interface InterceptionChain
+public class ValueBearerImpl implements ValueBearer
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
+   private int value;
 
-   boolean hasNextInterceptor();
+   public ValueBearerImpl(int value)
+   {
+      this.value = value;
+   }
+
+   public int getValue()
+   {
+      return value;
+   }
 }

@@ -14,19 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.interceptor.metadata;
 
-package org.jboss.interceptor.spi.context;
-
+import javax.annotation.PostConstruct;
+import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
+ * InterceptorWithPostConstructAndAroundInvoke
  *
- * @author Marius Bogoevici
+ * @author Jaikiran Pai
+ * @version $Revision: $
  */
-public interface InterceptionChain
+public class InterceptorWithPostConstructAndAroundInvoke
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
 
-   boolean hasNextInterceptor();
+   @PostConstruct
+   public void postConstruct(InvocationContext ctx)
+   {
+
+   }
+
+   @AroundInvoke
+   public Object around(InvocationContext ctx) throws Exception
+   {
+      return ctx.proceed();
+   }
 }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -15,18 +15,20 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.spi.context;
+package org.jboss.interceptor.proxy;
 
+import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
- *
  * @author Marius Bogoevici
  */
-public interface InterceptionChain
+public class ParameterOverridingInterceptorWithLongArray
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
-
-   boolean hasNextInterceptor();
+   @AroundInvoke
+   public Object overrideParameters(InvocationContext invocationContext) throws Exception
+   {
+      invocationContext.setParameters(new Long[][]{new Long[]{42l}});
+      return invocationContext.proceed();
+   }
 }

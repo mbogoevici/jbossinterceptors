@@ -15,18 +15,19 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.spi.context;
-
-import javax.interceptor.InvocationContext;
+package org.jboss.interceptor.javassist;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
- *
  * @author Marius Bogoevici
  */
-public interface InterceptionChain
-{
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
+public class Foo
+{   
+   public void other()
+   {
+   }
 
-   boolean hasNextInterceptor();
+   public Foo produce()
+   {
+      return new Foo();
+   }
 }

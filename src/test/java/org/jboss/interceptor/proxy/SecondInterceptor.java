@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -15,18 +15,29 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.spi.context;
+package org.jboss.interceptor.proxy;
 
+import javax.annotation.PreDestroy;
+import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
- *
- * @author Marius Bogoevici
- */
-public interface InterceptionChain
+* @author Marius Bogoevici
+*/
+public class SecondInterceptor extends FirstInterceptor
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
+   @AroundInvoke
+   Object doAround(InvocationContext invocationContext) throws Exception
+   {
+      InterceptorTestLogger.add(SecondInterceptor.class, "aroundInvokeBefore");
+      Object result = invocationContext.proceed();
+      InterceptorTestLogger.add(SecondInterceptor.class, "aroundInvokeAfter");
+      return result;
+   }
 
-   boolean hasNextInterceptor();
+   @PreDestroy
+   private void doneHere(InvocationContext invocationContext) throws Exception
+   {
+      InterceptorTestLogger.add(SecondInterceptor.class, "preDestroy");
+   }
 }

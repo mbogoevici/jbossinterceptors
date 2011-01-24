@@ -47,7 +47,7 @@ public interface InterceptionModel<T, I> extends Serializable
 
    /**
     * Returns all interceptor classes that are applicable to the given intercepted entity
-    * @return all interceptors
+    * @return all interceptor
     */
    public Set<InterceptorMetadata<I>> getAllInterceptors();
 

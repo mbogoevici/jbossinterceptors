@@ -15,18 +15,46 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.spi.context;
+package org.jboss.interceptor.reentrant;
 
+import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
- *
  * @author Marius Bogoevici
  */
-public interface InterceptionChain
+public class RetriableInterceptor
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
+   public static int interceptionsCount  = 0;
+   private int maxTries;
 
-   boolean hasNextInterceptor();
+   public RetriableInterceptor()
+   {
+      this.maxTries = 3 ;
+   }
+
+   public int getInterceptionsCount()
+   {
+      return interceptionsCount;
+   }
+
+   @AroundInvoke
+   public Object intercept(InvocationContext context) throws Exception
+   {
+
+      boolean isRetriable = false;
+      do {
+         try
+         {
+            return context.proceed();
+         }
+         catch (Exception e)
+         {
+            isRetriable = interceptionsCount++ < maxTries;
+         }
+      } while (isRetriable);
+      throw new RuntimeException("Max invocations count exceeded");
+   }
+
+
 }

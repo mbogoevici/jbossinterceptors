@@ -18,6 +18,8 @@
 package org.jboss.interceptor.spi.model;
 
 /**
+ * An abstract representation of an interception type
+ *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public enum InterceptionType
@@ -40,11 +42,20 @@ public enum InterceptionType
       this.annotationClassName = annotationClassName;
    }
 
+   /**
+    * Indicates whether the interception type is a lifecycle callback
+    *
+    */
    public boolean isLifecycleCallback()
    {
       return lifecycleCallback;
    }
 
+   /**
+    * The name of the annotation class
+    *
+    * @return
+    */
    public String annotationClassName()
    {
       return annotationClassName;

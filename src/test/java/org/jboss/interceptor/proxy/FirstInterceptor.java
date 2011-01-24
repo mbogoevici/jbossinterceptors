@@ -15,18 +15,34 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.spi.context;
+package org.jboss.interceptor.proxy;
 
+import java.io.Serializable;
+
+import javax.annotation.PostConstruct;
+import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
- *
- * @author Marius Bogoevici
- */
-public interface InterceptionChain
+* @author Marius Bogoevici
+*/
+public class FirstInterceptor implements Serializable
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
 
-   boolean hasNextInterceptor();
+   @AroundInvoke
+   Object doAround(InvocationContext invocationContext) throws Exception
+   {
+      InterceptorTestLogger.add(FirstInterceptor.class, "aroundInvokeBefore");
+      Object result = invocationContext.proceed();
+      InterceptorTestLogger.add(FirstInterceptor.class, "aroundInvokeAfter");
+      return result;
+   }
+
+   @PostConstruct
+   public void doAfterConstruction(InvocationContext invocationContext) throws Exception
+   {
+      InterceptorTestLogger.add(FirstInterceptor.class, "postConstruct");
+      invocationContext.proceed();
+   }
+   
 }

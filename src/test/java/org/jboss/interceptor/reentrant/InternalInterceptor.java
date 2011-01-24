@@ -15,18 +15,22 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.spi.context;
+package org.jboss.interceptor.reentrant;
 
+import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
- *
  * @author Marius Bogoevici
  */
-public interface InterceptionChain
+public class InternalInterceptor
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
+   public static int interceptionsCount  = 0;
 
-   boolean hasNextInterceptor();
+   @AroundInvoke
+   public Object intercept(InvocationContext context) throws Exception
+   {
+      interceptionsCount ++;
+      return context.proceed();
+   }
 }

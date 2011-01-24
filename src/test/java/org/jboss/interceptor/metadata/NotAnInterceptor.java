@@ -14,19 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.jboss.interceptor.spi.context;
-
-import javax.interceptor.InvocationContext;
+package org.jboss.interceptor.metadata;
 
 /**
- * A chain of instantiated interceptors, applicable to a given invocation.
+ * NotAnInterceptor
  *
- * @author Marius Bogoevici
+ * @author Jaikiran Pai
+ * @version $Revision: $
  */
-public interface InterceptionChain
+public class NotAnInterceptor
 {
-   Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
 
-   boolean hasNextInterceptor();
 }
