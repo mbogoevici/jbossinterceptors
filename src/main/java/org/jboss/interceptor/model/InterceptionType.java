@@ -18,7 +18,7 @@
 package org.jboss.interceptor.model;
 
 /**
- * An abstract representation of an interception type
+ * An abstract representation of an interception type.
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
