@@ -26,6 +26,7 @@ import javassist.util.proxy.ProxyObject;
 import org.jboss.interceptor.exceptions.InterceptorException;
 import org.jboss.interceptor.instantiation.InterceptorInstantiator;
 import org.jboss.interceptor.invocation.InvocationContextFactory;
+import org.jboss.interceptor.invocation.MethodReferenceResolver;
 import org.jboss.interceptor.metadata.ClassMetadata;
 import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.interceptor.util.InterceptionUtils;
@@ -42,11 +43,14 @@ public class InterceptorProxyCreatorImpl implements InterceptorProxyCreator
 
    private InterceptorInstantiator<?,?> interceptorInstantiator;
 
-   public InterceptorProxyCreatorImpl(InterceptorInstantiator<?,?> interceptorInstantiator, InvocationContextFactory invocationContextFactory, InterceptionModel<ClassMetadata<?>, ?> interceptionModel)
+   private MethodReferenceResolver methodReferenceResolver;
+
+   public InterceptorProxyCreatorImpl(InterceptorInstantiator<?, ?> interceptorInstantiator, InvocationContextFactory invocationContextFactory, InterceptionModel<ClassMetadata<?>, ?> interceptionModel, MethodReferenceResolver methodReferenceResolver)
    {
       this.interceptorInstantiator = interceptorInstantiator;
       this.invocationContextFactory = invocationContextFactory;
       this.interceptionModel = interceptionModel;
+      this.methodReferenceResolver = methodReferenceResolver;
    }
 
 
@@ -107,12 +111,12 @@ public class InterceptorProxyCreatorImpl implements InterceptorProxyCreator
 
    public <T> MethodHandler createMethodHandler(Object target, ClassMetadata<T> proxyClass)
    {
-      return new InterceptorMethodHandler(target, proxyClass, interceptionModel, interceptorInstantiator, invocationContextFactory);
+      return new InterceptorMethodHandler(target, proxyClass, interceptionModel, interceptorInstantiator, invocationContextFactory, methodReferenceResolver);
    }
 
     public <T> MethodHandler createSubclassingMethodHandler(Object targetInstance, ClassMetadata<T> proxyClass)
     {
-       return new InterceptorMethodHandler(targetInstance,  proxyClass, interceptionModel, interceptorInstantiator, invocationContextFactory);
+       return new InterceptorMethodHandler(targetInstance,  proxyClass, interceptionModel, interceptorInstantiator, invocationContextFactory, methodReferenceResolver);
     }
 
    private <T> Constructor<T> getNoArgConstructor(Class<T> clazz)

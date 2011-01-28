@@ -22,6 +22,8 @@ import org.jboss.interceptor.metadata.ClassMetadata;
 import org.jboss.interceptor.metadata.InterceptorReference;
 
 /**
+ * A simple implementation of an {@link InterceptorInstantiator} that uses {@link java.lang.Class#newInstance()}
+ *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public class DirectClassInterceptorInstantiator implements InterceptorInstantiator<Object, ClassMetadata<?>>

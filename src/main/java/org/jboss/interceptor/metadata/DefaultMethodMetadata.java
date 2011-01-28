@@ -17,10 +17,12 @@
 
 package org.jboss.interceptor.metadata;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.interceptor.model.InterceptionType;
@@ -38,13 +40,17 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable
    
    private static final long serialVersionUID = -4538617003189564552L;
    
-   private Method javaMethod;
-
    private Set<InterceptionType> supportedInterceptorTypes = new HashSet<InterceptionType>();
+   private String[] parameterTypeNames;
+   private String name;
+   private String methodName;
+   private String declaringClassName;
+   private boolean methodPrivate;
 
    private DefaultMethodMetadata(M methodReference, AnnotatedMethodReader<M> annotationReader)
    {
-      this.javaMethod = annotationReader.getJavaMethod(methodReference);
+      Method javaMethod = annotationReader.getJavaMethod(methodReference);
+
       for (InterceptionType interceptionType: InterceptionTypeRegistry.getSupportedInterceptionTypes())
       {
          if (annotationReader.getAnnotation(InterceptionTypeRegistry.getAnnotationClass(interceptionType), methodReference) != null)
@@ -52,19 +58,19 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable
             supportedInterceptorTypes.add(interceptionType);
          }
       }
-   }
 
-   private DefaultMethodMetadata(Set<InterceptionType> interceptionTypes, MethodReference methodReference)
-   {
-      this.supportedInterceptorTypes = interceptionTypes;
-      try
+      Class<?>[] parameterTypes = javaMethod.getParameterTypes();
+      List<String> parameterTypeNames = new ArrayList<String>();
+      for (Class<?> parameterType : parameterTypes)
       {
-         this.javaMethod = methodReference.getDeclaringClass().getDeclaredMethod(methodReference.getMethodName(), methodReference.getParameterTypes());
+         parameterTypeNames.add(parameterType.getName());
       }
-      catch (NoSuchMethodException e)
-      {
-         throw new IllegalStateException(e);
-      }
+      this.parameterTypeNames = parameterTypeNames.toArray(new String[parameterTypeNames.size()]);
+
+      name = javaMethod.getReturnType().getName();
+      methodName = javaMethod.getName();
+      declaringClassName = javaMethod.getDeclaringClass().getName();
+      methodPrivate = Modifier.isPrivate(javaMethod.getModifiers());
    }
 
    public static <M> MethodMetadata of(M methodReference, AnnotatedMethodReader<M> methodReader)
@@ -83,38 +89,31 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable
       return supportedInterceptorTypes;
    }
 
-   public Method getJavaMethod()
+   public String getName()
    {
-      return javaMethod;
+      return methodName;
    }
 
-   public Class<?> getReturnType()
+   public String[] getParameterTypeNames()
    {
-      return javaMethod.getReturnType();
+      return parameterTypeNames;
    }
 
-   private Object writeReplace()
+   public String getDeclaringClassName()
    {
-      return new DefaultMethodMetadataSerializationProxy(supportedInterceptorTypes, MethodReference.of(this, true));
+      return declaringClassName;
+   }
+
+   public boolean isPrivate()
+   {
+      return methodPrivate;
+   }
+
+   public String getReturnTypeName()
+   {
+      return name;
    }
 
 
-   private static class DefaultMethodMetadataSerializationProxy implements Serializable
-   {
-      private Set<InterceptionType> supportedInterceptionTypes;
-      private MethodReference methodReference;
-
-      private DefaultMethodMetadataSerializationProxy(Set<InterceptionType> supportedInterceptionTypes, MethodReference methodReference)
-      {
-         this.supportedInterceptionTypes = supportedInterceptionTypes;
-         this.methodReference = methodReference;
-      }
-
-      private Object readResolve() throws ObjectStreamException
-      {
-         return new DefaultMethodMetadata(supportedInterceptionTypes, methodReference);
-      }
-
-   }
 
 }

@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
 import org.jboss.interceptor.metadata.ClassMetadata;
 import org.jboss.interceptor.metadata.InterceptorMetadata;
 import org.jboss.interceptor.metadata.InterceptorReference;
@@ -58,16 +60,25 @@ public class SimpleInterceptorMetadata<T> implements InterceptorMetadata<T>, Ser
       return this.interceptorReference.getClassMetadata();
    }
 
+   /**
+    * {@inheritDoc}
+    */
    public InterceptorReference<T> getInterceptorReference()
    {
       return interceptorReference;
    }
 
+   /**
+    * {@inheritDoc}
+    */
    public boolean isTargetClass()
    {
       return targetClass;
    }
 
+   /**
+    * {@inheritDoc}
+    */
    public List<MethodMetadata> getInterceptorMethods(InterceptionType interceptionType)
    {
       if (interceptorMethodMap != null)

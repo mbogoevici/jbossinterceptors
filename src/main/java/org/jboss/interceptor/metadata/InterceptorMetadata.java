@@ -23,14 +23,16 @@ import java.util.List;
 import org.jboss.interceptor.model.InterceptionType;
 
 /**
- *
+ * Interceptor metadata describes the capabilities of an interceptor. It assumes that the interceptor is
+ * backed by a class
+ * are supported by this interceptor and what are the interceptor methods that shou
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public interface InterceptorMetadata<T> extends Serializable
 {
    /**
-    * Returns the class for which this interceptor metadata was created 
+    * The reference t
     * 
     * @return
     */
@@ -39,7 +41,7 @@ public interface InterceptorMetadata<T> extends Serializable
    ClassMetadata<?> getInterceptorClass();
    
    /**
-    * Returns the list of interceptor methods of this class for a given 
+    * Returns the sequence of interceptor methods that should be invoked on this interceptor for a given
     * interception type.
     *
     * @param interceptionType
@@ -48,12 +50,17 @@ public interface InterceptorMetadata<T> extends Serializable
    List<MethodMetadata> getInterceptorMethods(InterceptionType interceptionType);
    
    /**
-    * Whether the interceptor corresponding to this {@link InterceptorMetadata}
+    * Indicates whether the interceptor corresponding to this {@link InterceptorMetadata} can
+    * handle a particular {@link InterceptionType}
     *   
     * @param interceptionType The {@link InterceptionType}
     * @return
     */
    boolean isEligible(InterceptionType interceptionType);
 
+   /**
+    * Indicates whether this {@link }
+    * @return
+    */
    boolean isTargetClass();
 }

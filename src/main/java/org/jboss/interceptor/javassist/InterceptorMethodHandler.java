@@ -16,7 +16,9 @@ import javassist.util.proxy.ProxyObject;
 import org.jboss.interceptor.instantiation.InterceptorInstantiator;
 import org.jboss.interceptor.invocation.InterceptorInvocation;
 import org.jboss.interceptor.invocation.InvocationContextFactory;
+import org.jboss.interceptor.invocation.MethodReferenceResolver;
 import org.jboss.interceptor.invocation.SimpleInterceptionChain;
+import org.jboss.interceptor.metadata.MethodSignature;
 import org.jboss.interceptor.reader.InterceptorMetadataUtils;
 import org.jboss.interceptor.metadata.ClassMetadata;
 import org.jboss.interceptor.metadata.InterceptorMetadata;
@@ -47,15 +49,18 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable
    private InterceptionModel<ClassMetadata<?>, ?> interceptionModel;
    private Object targetInstance;
    private InvocationContextFactory invocationContextFactory;
+   private MethodReferenceResolver methodReferenceResolver;
 
    public InterceptorMethodHandler(Object targetInstance,
                                    ClassMetadata<?> targetClassMetadata,
                                    InterceptionModel<ClassMetadata<?>, ?> interceptionModel,
-                                   InterceptorInstantiator<?,?> interceptorInstantiator,
-                                   InvocationContextFactory invocationContextFactory )
+                                   InterceptorInstantiator<?, ?> interceptorInstantiator,
+                                   InvocationContextFactory invocationContextFactory,
+                                   MethodReferenceResolver methodReferenceResolver)
    {
       this.targetInstance = targetInstance;
       this.invocationContextFactory = invocationContextFactory;
+      this.methodReferenceResolver = methodReferenceResolver;
       if (interceptionModel == null)
       {
          throw new IllegalArgumentException("Interception model must not be null");
@@ -120,15 +125,15 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable
    private Object executeInterception(Object self, Method proceedingMethod, Method thisMethod, Object[] args, InterceptionType interceptionType) throws Throwable
    {
 
-      List<? extends InterceptorMetadata<?>> interceptorList = interceptionModel.getInterceptors(interceptionType, thisMethod);
+      List<? extends InterceptorMetadata<?>> interceptorList = interceptionModel.getInterceptors(interceptionType, thisMethod != null?MethodSignature.of(thisMethod):null);
       Collection<InterceptorInvocation<?>> interceptorInvocations = new ArrayList<InterceptorInvocation<?>>();
       for (InterceptorMetadata interceptorReference : interceptorList)
       {
-         interceptorInvocations.add(new InterceptorInvocation(interceptorHandlerInstances.get(interceptorReference), interceptorReference, interceptionType));
+         interceptorInvocations.add(new InterceptorInvocation(interceptorHandlerInstances.get(interceptorReference), interceptorReference, interceptionType, methodReferenceResolver));
       }
       if (targetClassInterceptorMetadata != null && targetClassInterceptorMetadata.getInterceptorMethods(interceptionType) != null && !targetClassInterceptorMetadata.getInterceptorMethods(interceptionType).isEmpty())
       {
-         interceptorInvocations.add(new InterceptorInvocation(isProxy() ? targetInstance : self, targetClassInterceptorMetadata, interceptionType));
+         interceptorInvocations.add(new InterceptorInvocation(isProxy() ? targetInstance : self, targetClassInterceptorMetadata, interceptionType, methodReferenceResolver));
       }
       SimpleInterceptionChain chain = new SimpleInterceptionChain(interceptorInvocations, interceptionType, isProxy() ? targetInstance : self, isProxy() ? thisMethod : proceedingMethod);
       return chain.invokeNextInterceptor(invocationContextFactory.newInvocationContext(chain, isProxy() ? targetInstance : self, isProxy() ? thisMethod : proceedingMethod, args));

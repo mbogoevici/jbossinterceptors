@@ -42,23 +42,23 @@ public class InterceptorClassMetadataTestCase
 
       List<MethodMetadata> postConstructMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.POST_CONSTRUCT);
       Assert.assertEquals(1, postConstructMethods.size());
-      Assert.assertEquals(postConstructMethods.get(0).getJavaMethod().getName(), "doPostConstruct");
+      Assert.assertEquals(postConstructMethods.get(0).getName(), "doPostConstruct");
 
       List<MethodMetadata> preDestroyMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.PRE_DESTROY);
       Assert.assertEquals(true, preDestroyMethods.size() == 1);
-      Assert.assertEquals(preDestroyMethods.get(0).getJavaMethod().getName(), "doPreDestroy");
+      Assert.assertEquals(preDestroyMethods.get(0).getName(), "doPreDestroy");
 
       List<MethodMetadata> aroundInvokeMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.AROUND_INVOKE);
       Assert.assertEquals(true, aroundInvokeMethods.size() == 1);
-      Assert.assertEquals(aroundInvokeMethods.get(0).getJavaMethod().getName(), "doAroundInvoke");
+      Assert.assertEquals(aroundInvokeMethods.get(0).getName(), "doAroundInvoke");
 
       List<MethodMetadata> postActivateMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.POST_ACTIVATE);
       Assert.assertEquals(true, postActivateMethods.size() == 1);
-      Assert.assertEquals(postActivateMethods.get(0).getJavaMethod().getName(), "doPostActivate");
+      Assert.assertEquals(postActivateMethods.get(0).getName(), "doPostActivate");
 
       List<MethodMetadata> prePassivateMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.PRE_PASSIVATE);
       Assert.assertEquals(true, prePassivateMethods.size() == 1);
-      Assert.assertEquals(prePassivateMethods.get(0).getJavaMethod().getName(), "doPrePassivate");
+      Assert.assertEquals(prePassivateMethods.get(0).getName(), "doPrePassivate");
 
    }
 
@@ -72,15 +72,15 @@ public class InterceptorClassMetadataTestCase
 
       List<MethodMetadata> preDestroyMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.PRE_DESTROY);
       Assert.assertEquals(true, preDestroyMethods.size() == 1);
-      Assert.assertEquals(preDestroyMethods.get(0).getJavaMethod().getName(), "doPreDestroy");
+      Assert.assertEquals(preDestroyMethods.get(0).getName(), "doPreDestroy");
 
       List<MethodMetadata> aroundInvokeMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.AROUND_INVOKE);
       Assert.assertEquals(true, aroundInvokeMethods.size() == 1);
-      Assert.assertEquals(aroundInvokeMethods.get(0).getJavaMethod().getName(), "doAroundInvoke");
+      Assert.assertEquals(aroundInvokeMethods.get(0).getName(), "doAroundInvoke");
 
       List<MethodMetadata> postActivateMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.POST_ACTIVATE);
       Assert.assertEquals(true, postActivateMethods.size() == 1);
-      Assert.assertEquals(postActivateMethods.get(0).getJavaMethod().getName(), "doPostActivate");
+      Assert.assertEquals(postActivateMethods.get(0).getName(), "doPostActivate");
 
       List<MethodMetadata> prePassivateMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.PRE_PASSIVATE);
       Assert.assertEquals(true, prePassivateMethods.size() == 0);
@@ -94,14 +94,14 @@ public class InterceptorClassMetadataTestCase
 
       List<MethodMetadata> postConstructMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.POST_CONSTRUCT);
       Assert.assertEquals(1, postConstructMethods.size());
-      Assert.assertEquals(postConstructMethods.get(0).getJavaMethod().getName(), "doPostConstruct");
+      Assert.assertEquals(postConstructMethods.get(0).getName(), "doPostConstruct");
 
       List<MethodMetadata> preDestroyMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.PRE_DESTROY);
       Assert.assertEquals(true, preDestroyMethods.size() == 0);
 
       List<MethodMetadata> aroundInvokeMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.AROUND_INVOKE);
       Assert.assertEquals(true, aroundInvokeMethods.size() == 1);
-      Assert.assertEquals(aroundInvokeMethods.get(0).getJavaMethod().getName(), "doAroundInvoke");
+      Assert.assertEquals(aroundInvokeMethods.get(0).getName(), "doAroundInvoke");
 
       List<MethodMetadata> postActivateMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.POST_ACTIVATE);
       Assert.assertEquals(true, postActivateMethods.size() == 0);
@@ -118,15 +118,15 @@ public class InterceptorClassMetadataTestCase
 
       List<MethodMetadata> postConstructMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.POST_CONSTRUCT);
       Assert.assertEquals(1, postConstructMethods.size());
-      Assert.assertEquals(postConstructMethods.get(0).getJavaMethod().getName(), "methodOverriddenAndUsedAsInterceptor");
+      Assert.assertEquals(postConstructMethods.get(0).getName(), "methodOverriddenAndUsedAsInterceptor");
 
       List<MethodMetadata> preDestroyMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.PRE_DESTROY);
       Assert.assertEquals(true, preDestroyMethods.size() == 0);
 
       List<MethodMetadata> aroundInvokeMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.AROUND_INVOKE);
       Assert.assertEquals(true, aroundInvokeMethods.size() == 2);
-      Assert.assertEquals(aroundInvokeMethods.get(0).getJavaMethod().getName(), "methodDefinedOnParentAndUsedAsInterceptor");
-      Assert.assertEquals(aroundInvokeMethods.get(1).getJavaMethod().getName(), "methodDefinedOnChildAndUsedAsInterceptor");
+      Assert.assertEquals(aroundInvokeMethods.get(0).getName(), "methodDefinedOnParentAndUsedAsInterceptor");
+      Assert.assertEquals(aroundInvokeMethods.get(1).getName(), "methodDefinedOnChildAndUsedAsInterceptor");
 
       List<MethodMetadata> postActivateMethods = interceptorClassMetadata.getInterceptorMethods(InterceptionType.POST_ACTIVATE);
       Assert.assertEquals(true, postActivateMethods.size() == 0);

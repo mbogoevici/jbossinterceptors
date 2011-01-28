@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2011, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -15,32 +15,16 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.metadata;
-
-import org.jboss.interceptor.model.InterceptionType;
+package org.jboss.interceptor.invocation;
 
 import java.lang.reflect.Method;
-import java.util.Set;
+
+import org.jboss.interceptor.metadata.MethodReference;
 
 /**
- * Abstraction of a source of metadata information about a method. Allows the framework client
- * to configure their own way of providing method metadata, rather than relying exclusively on
- * Java reflection.
- * 
  * @author Marius Bogoevici
  */
-public interface MethodMetadata
+public interface MethodReferenceResolver
 {
-
-   Set<InterceptionType> getSupportedInterceptionTypes();
-
-   String getReturnTypeName();
-
-   String getName();
-
-   String[] getParameterTypeNames();
-
-   String getDeclaringClassName();
-
-   boolean isPrivate();
+   Method resolve(MethodReference methodReference);
 }

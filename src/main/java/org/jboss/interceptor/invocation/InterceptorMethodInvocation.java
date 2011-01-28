@@ -17,6 +17,8 @@
 
 package org.jboss.interceptor.invocation;
 
+import java.lang.reflect.Method;
+
 import javax.interceptor.InvocationContext;
 
 import org.jboss.interceptor.metadata.MethodMetadata;
@@ -28,23 +30,24 @@ public class InterceptorMethodInvocation<T>
 {
    T instance;
 
-   MethodMetadata method;
+   Method method;
 
-   InterceptorMethodInvocation(T instance, MethodMetadata method)
+   InterceptorMethodInvocation(T instance, Method method)
    {
       this.instance = instance;
       this.method = method;
+      this.method.setAccessible(true);
    }
 
    Object invoke(InvocationContext invocationContext) throws Exception
    {
       if (invocationContext != null)
-         return method.getJavaMethod().invoke(instance, invocationContext);
+         return method.invoke(instance, invocationContext);
       else
-         return method.getJavaMethod().invoke(instance);
+         return method.invoke(instance);
    }
 
-   public MethodMetadata getMethod()
+   public Method getMethod()
    {
       return method;
    }

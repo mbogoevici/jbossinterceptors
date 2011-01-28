@@ -26,34 +26,35 @@ import org.jboss.interceptor.util.ReflectionUtils;
 
 
 /**
- * Wrapper for a method. Allows serializing references to methods.
+ * A method's reference: includes the declaring class name and the method signature
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public class MethodReference implements Serializable
 {
-   private String methodName;
+   private String declaringClassName;
 
-   private Class<?>[] parameterTypes;
+   private MethodSignature methodSignature;
 
-   private Class<?> declaringClass;
-
-
-   public static MethodReference of(Method method, boolean withDeclaringClass)
+   public static MethodReference of(Method method)
    {
-      return new MethodReference(method.getName(), method.getParameterTypes(), withDeclaringClass ? method.getDeclaringClass() : null);
+      return new MethodReference(method.getDeclaringClass().getName(), MethodSignature.of(method));
    }
 
-   public static MethodReference of(MethodMetadata method, boolean withDeclaringClass)
+   public MethodReference(String declaringClassName, MethodSignature methodSignature)
    {
-      return new MethodReference(method.getJavaMethod().getName(), method.getJavaMethod().getParameterTypes(), withDeclaringClass ? method.getJavaMethod().getDeclaringClass() : null);
+      this.declaringClassName = declaringClassName;
+      this.methodSignature = methodSignature;
    }
 
-   private MethodReference(String methodName, Class<?>[] parameterTypes, Class<?> declaringClass)
+   public String getDeclaringClassName()
    {
-      this.methodName = methodName;
-      this.parameterTypes = parameterTypes;
-      this.declaringClass = declaringClass;
+      return declaringClassName;
+   }
+
+   public MethodSignature getMethodSignature()
+   {
+      return methodSignature;
    }
 
    @Override
@@ -70,15 +71,11 @@ public class MethodReference implements Serializable
 
       MethodReference that = (MethodReference) o;
 
-      if (declaringClass != null ? !declaringClass.equals(that.declaringClass) : that.declaringClass != null)
+      if (declaringClassName != null ? !declaringClassName.equals(that.declaringClassName) : that.declaringClassName != null)
       {
          return false;
       }
-      if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null)
-      {
-         return false;
-      }
-      if (!Arrays.equals(parameterTypes, that.parameterTypes))
+      if (methodSignature != null ? !methodSignature.equals(that.methodSignature) : that.methodSignature != null)
       {
          return false;
       }
@@ -86,81 +83,12 @@ public class MethodReference implements Serializable
       return true;
    }
 
-   public String getMethodName()
-   {
-      return methodName;
-   }
-
-   public Class<?>[] getParameterTypes()
-   {
-      return parameterTypes;
-   }
-
-   public Class<?> getDeclaringClass()
-   {
-      return declaringClass;
-   }
-
    @Override
    public int hashCode()
    {
-      int result = methodName != null ? methodName.hashCode() : 0;
-      result = 31 * result + (parameterTypes != null ? Arrays.hashCode(parameterTypes) : 0);
-      result = 31 * result + (declaringClass != null ? declaringClass.hashCode() : 0);
+      int result = declaringClassName != null ? declaringClassName.hashCode() : 0;
+      result = 31 * result + (methodSignature != null ? methodSignature.hashCode() : 0);
       return result;
    }
 
-   private Object writeReplace()
-   {
-      return new MethodHolderSerializationProxy(this);
-   }
-
-   static class MethodHolderSerializationProxy implements Serializable
-   {
-      private String className;
-      private String methodName;
-      private String parameterClassNames[];
-
-      MethodHolderSerializationProxy(MethodReference methodReference)
-      {
-         className = methodReference.declaringClass != null ? methodReference.declaringClass.getName() : null;
-         methodName = methodReference.methodName;
-         if (methodReference.parameterTypes != null)
-         {
-            parameterClassNames = new String[methodReference.parameterTypes.length];
-            int i = 0;
-            for (Class<?> parameterType : methodReference.parameterTypes)
-            {
-               parameterClassNames[i++] = parameterType.getName();
-            }
-         }
-      }
-
-      private Object readResolve()
-      {
-
-         try
-         {
-            Class<?>[] parameterTypes = null;
-            if (parameterClassNames != null)
-            {
-               parameterTypes = new Class<?>[parameterClassNames.length];
-               for (int i = 0; i < parameterClassNames.length; i++)
-               {
-                  parameterTypes[i] = ReflectionUtils.classForName(parameterClassNames[i]);
-               }
-            }
-            Class<?> declaringClass = null;
-            if (className != null)
-            {
-               declaringClass = ReflectionUtils.classForName(className);
-            }
-            return new MethodReference(methodName, parameterTypes, declaringClass);
-         }
-         catch (ClassNotFoundException e)
-         {
-            throw new InterceptorException("Error while deserializing intercepted instance", e);
-         }
-      }
-   }
 }

@@ -27,6 +27,7 @@ import junit.framework.Assert;
 import org.jboss.interceptor.invocation.DefaultInvocationContextFactory;
 import org.jboss.interceptor.invocation.InterceptionChain;
 import org.jboss.interceptor.invocation.InterceptorInvocation;
+import org.jboss.interceptor.invocation.MethodReferenceResolver;
 import org.jboss.interceptor.invocation.SimpleInterceptionChain;
 import org.jboss.interceptor.reader.DefaultMetadataCachingReader;
 import org.jboss.interceptor.reader.MetadataCachingReader;
@@ -55,7 +56,8 @@ public class LifecycleMethodInvocationTestCase
       // create the interceptor invocation for @PostConstruct
       InterceptorMetadata interceptorMetaData = metadataCachingReader.getInterceptorMetadata(SimpleInterceptor.class);
       SimpleInterceptor interceptor = new SimpleInterceptor();
-      InterceptorInvocation<?> interceptorInvocation = new InterceptorInvocation(interceptor, interceptorMetaData, InterceptionType.POST_CONSTRUCT);
+      MethodReferenceResolver methodReferenceResolver =  new ClassLoaderReferenceResolver(Thread.currentThread().getContextClassLoader());
+      InterceptorInvocation<?> interceptorInvocation = new InterceptorInvocation(interceptor, interceptorMetaData, InterceptionType.POST_CONSTRUCT, methodReferenceResolver);
       Collection<InterceptorInvocation<?>> interceptorInvocations = new HashSet<InterceptorInvocation<?>>();
       interceptorInvocations.add(interceptorInvocation);
 

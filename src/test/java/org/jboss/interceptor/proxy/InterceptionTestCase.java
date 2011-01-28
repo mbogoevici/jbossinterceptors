@@ -28,6 +28,9 @@ import java.util.Map;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
+import org.jboss.interceptor.interceptionchain.ClassLoaderReferenceResolver;
+import org.jboss.interceptor.invocation.MethodReferenceResolver;
+import org.jboss.interceptor.metadata.MethodSignature;
 import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.instantiation.DirectClassInterceptorInstantiator;
 import org.jboss.interceptor.instantiation.InterceptorInstantiator;
@@ -101,11 +104,14 @@ public class InterceptionTestCase
    private InterceptorInstantiator<?, ClassMetadata<?>> interceptorInstantiator;
    
    MetadataCachingReader metadataCachingReader = new DefaultMetadataCachingReader();
+   private MethodReferenceResolver methodReferenceResolver;
 
    @Before
    public void setUp()
    {
       interceptorInstantiator = new DirectClassInterceptorInstantiator();
+
+      methodReferenceResolver = new ClassLoaderReferenceResolver(Thread.currentThread().getContextClassLoader());
    }
 
    public void resetLogAndSetupClassesForMethod() throws Exception
@@ -114,7 +120,7 @@ public class InterceptionTestCase
       ClassMetadata<?> footballTeamClass = metadataCachingReader.getClassMetadata(FootballTeam.class);
       InterceptionModelBuilder<ClassMetadata<?>,?> builder =
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("getName")).with(
+      builder.interceptAroundInvoke(new MethodSignature("getName")).with(
              metadataCachingReader.getInterceptorMetadata(FirstInterceptor.class),  metadataCachingReader.getInterceptorMetadata(SecondInterceptor.class));
       builder.interceptPostConstruct().with( metadataCachingReader.getInterceptorMetadata(FirstInterceptor.class));
       builder.interceptPreDestroy().with( metadataCachingReader.getInterceptorMetadata(SecondInterceptor.class));
@@ -150,7 +156,7 @@ public class InterceptionTestCase
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
       builder.interceptAll().with( metadataCachingReader.getInterceptorMetadata(FirstInterceptor.class));
       builder.interceptPreDestroy().with( metadataCachingReader.getInterceptorMetadata(SecondInterceptor.class));
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("getName")).with( metadataCachingReader.getInterceptorMetadata(SecondInterceptor.class));
+      builder.interceptAroundInvoke(new MethodSignature("getName")).with( metadataCachingReader.getInterceptorMetadata(SecondInterceptor.class));
       InterceptionModel<ClassMetadata<?>,?> interceptionModel;
       interceptionModel = builder.build();
       this.interceptionModelRegistry = new HashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
@@ -167,8 +173,8 @@ public class InterceptionTestCase
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
       builder.interceptAll().with( metadataCachingReader.getInterceptorMetadata(FirstInterceptor.class));
       builder.interceptPreDestroy().with( metadataCachingReader.getInterceptorMetadata(SecondInterceptor.class));
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("getName")).with( metadataCachingReader.getInterceptorMetadata(SecondInterceptor.class));
-      builder.ignoreGlobalInterceptors(FootballTeam.class.getMethod("getName"));
+      builder.interceptAroundInvoke(new MethodSignature("getName")).with( metadataCachingReader.getInterceptorMetadata(SecondInterceptor.class));
+      builder.excludeGlobalInterceptors(new MethodSignature("getName"));
       InterceptionModel<ClassMetadata<?>,?> interceptionModel;
       interceptionModel = builder.build();
       this.interceptionModelRegistry = new HashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
@@ -265,7 +271,7 @@ public class InterceptionTestCase
       ClassMetadata<?> footballTeamClass =  metadataCachingReader.getClassMetadata(FootballTeam.class);
       InterceptionModelBuilder<ClassMetadata<?>,?> builder =
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("echo", String.class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptor.class));
+      builder.interceptAroundInvoke(new MethodSignature("echo", String.class.getName())).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptor.class));
       InterceptionModel<ClassMetadata<?>,?> interceptionModel;
       interceptionModel = builder.build();
       this.interceptionModelRegistry = new HashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
@@ -284,7 +290,7 @@ public class InterceptionTestCase
       InterceptionModelBuilder<ClassMetadata<?>,?> builder =
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
 
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("echoInt", int.class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithInteger.class));
+      builder.interceptAroundInvoke(new MethodSignature("echoInt", int.class.getName())).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithInteger.class));
       InterceptionModel<ClassMetadata<?>,?> interceptionModel;
       interceptionModel = builder.build();
       this.interceptionModelRegistry = new HashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
@@ -303,7 +309,7 @@ public class InterceptionTestCase
       InterceptionModelBuilder<ClassMetadata<?>,?> builder =
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
 
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("echoLongAsObject", Long.class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithInteger.class));
+      builder.interceptAroundInvoke(new MethodSignature("echoLongAsObject", Long.class.getName())).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithInteger.class));
       InterceptionModel<ClassMetadata<?>,?> interceptionModel;
       interceptionModel = builder.build();
       this.interceptionModelRegistry = new HashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
@@ -322,7 +328,7 @@ public class InterceptionTestCase
       InterceptionModelBuilder<ClassMetadata<?>,?> builder =
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
 
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("echoLongAsObject", Long.class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithLong.class));
+      builder.interceptAroundInvoke(new MethodSignature("echoLongAsObject", Long.class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithLong.class));
       InterceptionModel<ClassMetadata<?>,?> interceptionModel;
       interceptionModel = builder.build();
       this.interceptionModelRegistry = new HashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
@@ -341,7 +347,7 @@ public class InterceptionTestCase
       InterceptionModelBuilder<ClassMetadata<?>,?> builder =
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
 
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("echoLong", long.class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithInteger.class));
+      builder.interceptAroundInvoke(new MethodSignature("echoLong", long.class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithInteger.class));
       InterceptionModel<ClassMetadata<?>,?> interceptionModel;
       interceptionModel = builder.build();
       this.interceptionModelRegistry = new HashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
@@ -360,7 +366,7 @@ public class InterceptionTestCase
       InterceptionModelBuilder<ClassMetadata<?>,?> builder =
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
 
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("echoInt", int.class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithLong.class));
+      builder.interceptAroundInvoke(new MethodSignature("echoInt", int.class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithLong.class));
       InterceptionModel<ClassMetadata<?>,?> interceptionModel;
       interceptionModel = builder.build();
       this.interceptionModelRegistry = new HashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
@@ -379,7 +385,7 @@ public class InterceptionTestCase
       InterceptionModelBuilder<ClassMetadata<?>,?> builder =
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
 
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("echoObjectArray", Object[].class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithLongArray.class));
+      builder.interceptAroundInvoke(new MethodSignature("echoObjectArray", Object[].class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithLongArray.class));
       InterceptionModel<ClassMetadata<?>,?> interceptionModel;
       interceptionModel = builder.build();
       this.interceptionModelRegistry = new HashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
@@ -398,7 +404,7 @@ public class InterceptionTestCase
       InterceptionModelBuilder<ClassMetadata<?>,?> builder =
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
 
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("echoStringArray", String[].class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithLongArray.class));
+      builder.interceptAroundInvoke(new MethodSignature("echoStringArray", String[].class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptorWithLongArray.class));
       InterceptionModel<ClassMetadata<?>,?> interceptionModel;
       interceptionModel = builder.build();
       this.interceptionModelRegistry = new HashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
@@ -418,7 +424,7 @@ public class InterceptionTestCase
       InterceptionModelBuilder<ClassMetadata<?>,?> builder =
              InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(footballTeamClass);
 
-      builder.interceptAroundInvoke(FootballTeam.class.getMethod("echo2", ValueBearer.class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptor2.class));
+      builder.interceptAroundInvoke(new MethodSignature("echo2", ValueBearer.class)).with( metadataCachingReader.getInterceptorMetadata(ParameterOverridingInterceptor2.class));
       InterceptionModel<ClassMetadata<?>,?> interceptionModel;
       interceptionModel = builder.build();
       this.interceptionModelRegistry = new HashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
@@ -525,7 +531,7 @@ public class InterceptionTestCase
    private <T> T proxifyInstance(T instance, Class<? extends T> targetClass)
    {
       DefaultInvocationContextFactory contextFactory = new DefaultInvocationContextFactory();
-      InterceptorProxyCreatorImpl ipc = new InterceptorProxyCreatorImpl(interceptorInstantiator, contextFactory, (InterceptionModel<ClassMetadata<?>, Object>) interceptionModelRegistry.get(targetClass));
+      InterceptorProxyCreatorImpl ipc = new InterceptorProxyCreatorImpl(interceptorInstantiator, contextFactory, (InterceptionModel<ClassMetadata<?>, Object>) interceptionModelRegistry.get(targetClass), methodReferenceResolver);
       ClassMetadata<? extends T> targetClassMetadata =  metadataCachingReader.getClassMetadata(targetClass);
       MethodHandler methodHandler = ipc.createMethodHandler(instance, targetClassMetadata);
       Class<? extends T> proxyClassWithHandler = InterceptionUtils.createProxyClassWithHandler(targetClassMetadata, methodHandler);

@@ -22,15 +22,23 @@ import java.lang.reflect.Method;
 import javax.interceptor.InvocationContext;
 
 /**
+ * A default implementation of an {@link InvocationContextFactory}
+ *
  * @author Marius Bogoevici
  */
 public class DefaultInvocationContextFactory implements InvocationContextFactory
 {
+   /**
+    * {@inheritDoc}
+    */
    public InvocationContext newInvocationContext(InterceptionChain chain, Object o, Method method, Object[] args)
    {
       return new InterceptorInvocationContext(chain, o, method, args);
    }
 
+   /**
+    * {@inheritDoc}
+    */
    public InvocationContext newInvocationContext(InterceptionChain chain, Object o, Method method, Object timer)
    {
       return new InterceptorInvocationContext(chain, o, method, timer);

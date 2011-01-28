@@ -23,6 +23,7 @@ import java.util.Set;
 import java.io.Serializable;
 
 import org.jboss.interceptor.metadata.InterceptorMetadata;
+import org.jboss.interceptor.metadata.MethodSignature;
 
 /**
  * Describes how an entity is intercepted.
@@ -43,7 +44,7 @@ public interface InterceptionModel<T, I> extends Serializable
     * @throws IllegalArgumentException if interceptionType is business method or around timeout
     * but method is null, as well as if interceptionType is callback and method is not null
     */
-   public List<InterceptorMetadata<I>> getInterceptors(InterceptionType interceptionType, Method method);
+   public List<InterceptorMetadata<I>> getInterceptors(InterceptionType interceptionType, MethodSignature method);
 
    /**
     * Returns all interceptor classes that are applicable to the given intercepted entity

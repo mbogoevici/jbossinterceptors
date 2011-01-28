@@ -19,6 +19,7 @@ package org.jboss.interceptor.model;
 import java.lang.reflect.Method;
 
 import org.jboss.interceptor.metadata.InterceptorMetadata;
+import org.jboss.interceptor.metadata.MethodSignature;
 
 
 /**
@@ -77,12 +78,12 @@ public class InterceptionModelBuilder<T, I>
       return new MethodInterceptorDescriptor(null, InterceptionType.values());
    }
 
-   public MethodInterceptorDescriptor interceptAroundInvoke(Method m)
+   public MethodInterceptorDescriptor interceptAroundInvoke(MethodSignature m)
    {
       return new MethodInterceptorDescriptor(m, InterceptionType.AROUND_INVOKE);
    }
 
-   public MethodInterceptorDescriptor interceptAroundTimeout(Method m)
+   public MethodInterceptorDescriptor interceptAroundTimeout(MethodSignature m)
    {
       return new MethodInterceptorDescriptor(m, InterceptionType.AROUND_TIMEOUT);
    }
@@ -107,18 +108,29 @@ public class InterceptionModelBuilder<T, I>
       return new MethodInterceptorDescriptor(null, InterceptionType.POST_ACTIVATE);
    }
 
-   public void ignoreGlobalInterceptors(Method m)
+   public void excludeGlobalInterceptors(MethodSignature m)
    {
-      this.interceptionModel.setExcludeGlobalInterceptors(m, true);
+      this.interceptionModel.excludeGlobalInterceptors(m);
    }
+
+   public void excludeDefaultInterceptors(MethodSignature m)
+   {
+      this.interceptionModel.excludeDefaultInterceptors(m);
+   }
+
+   public void excludeDefaultInterceptorsGlobally()
+   {
+      this.interceptionModel.excludeDefaultInterceptorsGlobally();
+   }
+
 
    public final class MethodInterceptorDescriptor
    {
-      private Method method;
+      private MethodSignature method;
 
       private InterceptionType[] interceptionTypes;
 
-      public MethodInterceptorDescriptor(Method m, InterceptionType... interceptionType)
+      public MethodInterceptorDescriptor(MethodSignature m, InterceptionType... interceptionType)
       {
          this.method = m;
          this.interceptionTypes = interceptionType;

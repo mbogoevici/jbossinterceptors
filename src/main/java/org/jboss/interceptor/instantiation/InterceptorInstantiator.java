@@ -19,9 +19,18 @@ package org.jboss.interceptor.instantiation;
 import org.jboss.interceptor.metadata.InterceptorReference;
 
 /**
+ * A strategy for instantiating interceptors
+ *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public interface InterceptorInstantiator<T, I> {
+public interface InterceptorInstantiator<T, I>
+{
 
-    T createFor(InterceptorReference<I> interceptorReference);
+   /**
+    * Create an interceptor instance
+    *
+    * @param interceptorReference
+    * @return
+    */
+   T createFor(InterceptorReference<I> interceptorReference);
 }

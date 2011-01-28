@@ -75,14 +75,18 @@ public class SimpleInterceptionChain implements InterceptionChain
                {
                   log.trace("Invoking next interceptor in chain:" + nextInterceptorMethodInvocation.method.toString());
                }
-               if (nextInterceptorMethodInvocation.method.getJavaMethod().getParameterTypes().length == 1)
+               if (nextInterceptorMethodInvocation.method.getParameterTypes().length == 1)
                {
                   validateInterceptor(nextInterceptorMethodInvocation, invocationContext);
                   return nextInterceptorMethodInvocation.invoke(invocationContext);
                }
-               else if (nextInterceptorMethodInvocation.method.getJavaMethod().getParameterTypes().length == 0)
+               else if (nextInterceptorMethodInvocation.method.getParameterTypes().length == 0)
                {
                   validateInterceptor(nextInterceptorMethodInvocation, null);
+
+
+
+
                   nextInterceptorMethodInvocation.invoke(null);
                   while (hasNextInterceptor())
                   {
@@ -132,12 +136,12 @@ public class SimpleInterceptionChain implements InterceptionChain
 
    private void validateInterceptor(InterceptorMethodInvocation nextInterceptorMethodInvocation, InvocationContext context) {
       int expectedParameters = context == null? 0: 1;
-      if (nextInterceptorMethodInvocation.method.getJavaMethod().getParameterTypes().length != expectedParameters)
+      if (nextInterceptorMethodInvocation.method.getParameterTypes().length != expectedParameters)
       {
          throw new IllegalStateException(
                "Mismatch between number of expected and actual parameters on "
                      + nextInterceptorMethodInvocation.getMethod() + ": expected " + expectedParameters
-                     + ", actual " + nextInterceptorMethodInvocation.getMethod().getJavaMethod().getParameterTypes().length);
+                     + ", actual " + nextInterceptorMethodInvocation.getMethod().getParameterTypes().length);
       }
    }
 

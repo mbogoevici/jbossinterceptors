@@ -22,9 +22,13 @@ import java.util.Collection;
 
 import org.jboss.interceptor.metadata.InterceptorMetadata;
 import org.jboss.interceptor.metadata.MethodMetadata;
+import org.jboss.interceptor.metadata.MethodReference;
+import org.jboss.interceptor.metadata.MethodSignature;
 import org.jboss.interceptor.model.InterceptionType;
 
 /**
+ * An
+ *
  * @author Marius Bogoevici
  */
 public class InterceptorInvocation<T>
@@ -32,22 +36,26 @@ public class InterceptorInvocation<T>
    private T instance;
 
    private InterceptorMetadata<?> interceptorMetadata;
-   
+
    private InterceptionType interceptionType;
 
-   public InterceptorInvocation(T instance, InterceptorMetadata<?> interceptorMetadata, InterceptionType interceptionType)
+   private MethodReferenceResolver methodReferenceResolver;
+
+   public InterceptorInvocation(T instance, InterceptorMetadata<?> interceptorMetadata, InterceptionType interceptionType, MethodReferenceResolver methodReferenceResolver)
    {
       this.instance = instance;
       this.interceptorMetadata = interceptorMetadata;
       this.interceptionType = interceptionType;
+      this.methodReferenceResolver = methodReferenceResolver;
    }
 
    public Collection<InterceptorMethodInvocation> getInterceptorMethodInvocations()
    {
       Collection<InterceptorMethodInvocation> interceptorMethodInvocations = new ArrayList<InterceptorMethodInvocation>();
-      for (MethodMetadata method: interceptorMetadata.getInterceptorMethods(interceptionType))
+      for (MethodMetadata method : interceptorMetadata.getInterceptorMethods(interceptionType))
       {
-         interceptorMethodInvocations.add(new InterceptorMethodInvocation(instance, method));
+         interceptorMethodInvocations.add(new InterceptorMethodInvocation(instance, methodReferenceResolver.resolve(
+               new MethodReference(method.getDeclaringClassName(), new MethodSignature(method.getName(), method.getParameterTypeNames())))));
       }
       return interceptorMethodInvocations;
    }

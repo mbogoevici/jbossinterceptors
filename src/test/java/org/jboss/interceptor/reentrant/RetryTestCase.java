@@ -17,6 +17,8 @@
 
 package org.jboss.interceptor.reentrant;
 
+import org.jboss.interceptor.interceptionchain.ClassLoaderReferenceResolver;
+import org.jboss.interceptor.invocation.MethodReferenceResolver;
 import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.invocation.DefaultInvocationContextFactory;
 import org.jboss.interceptor.instantiation.DirectClassInterceptorInstantiator;
@@ -27,6 +29,7 @@ import org.jboss.interceptor.reader.DefaultMetadataCachingReader;
 import org.jboss.interceptor.metadata.ClassMetadata;
 import org.jboss.interceptor.model.InterceptionModel;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -35,6 +38,13 @@ import org.junit.Test;
 public class RetryTestCase
 {
    MetadataCachingReader metadataCachingReader = new DefaultMetadataCachingReader();
+   private MethodReferenceResolver methodReferenceResolver;
+
+   @Before
+   public void setUp()
+   {
+     methodReferenceResolver =  new ClassLoaderReferenceResolver(Thread.currentThread().getContextClassLoader());
+   }
 
    @Test
    public void testClassOnly()
@@ -45,7 +55,7 @@ public class RetryTestCase
 
       InterceptionModel<ClassMetadata<?>,?> classMetadataInterceptionModel = builder.build();
 
-      InterceptorProxyCreatorImpl ipc = new InterceptorProxyCreatorImpl(new DirectClassInterceptorInstantiator(), new DefaultInvocationContextFactory(), classMetadataInterceptionModel);
+      InterceptorProxyCreatorImpl ipc = new InterceptorProxyCreatorImpl(new DirectClassInterceptorInstantiator(), new DefaultInvocationContextFactory(), classMetadataInterceptionModel, methodReferenceResolver);
       SimpleSelfInterceptingClass subclassingProxy = ipc.createSubclassingProxy(classMetadata, new Class<?>[]{int.class}, new Object[]{Integer.valueOf(3)});
       subclassingProxy.doSomething();
       Assert.assertEquals(2, subclassingProxy.getInterceptionsCount()); // the interception is retried twice
@@ -63,7 +73,7 @@ public class RetryTestCase
 
       InterceptionModel<ClassMetadata<?>,?> classMetadataInterceptionModel = builder.build();
 
-      InterceptorProxyCreatorImpl ipc = new InterceptorProxyCreatorImpl(new DirectClassInterceptorInstantiator(), new DefaultInvocationContextFactory(), classMetadataInterceptionModel);
+      InterceptorProxyCreatorImpl ipc = new InterceptorProxyCreatorImpl(new DirectClassInterceptorInstantiator(), new DefaultInvocationContextFactory(), classMetadataInterceptionModel, methodReferenceResolver);
       SimpleClass subclassingProxy = ipc.createSubclassingProxy(classMetadata, new Class<?>[]{int.class}, new Object[]{Integer.valueOf(3)});
       subclassingProxy.doSomething();
       Assert.assertEquals(2, RetriableInterceptor.interceptionsCount); // the interception is retried twice
