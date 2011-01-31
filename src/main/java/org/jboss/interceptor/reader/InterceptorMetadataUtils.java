@@ -17,7 +17,7 @@ import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.interceptor.spi.metadata.InterceptorReference;
 import org.jboss.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.interceptor.spi.model.InterceptionType;
-import org.jboss.interceptor.util.InterceptionTypeRegistry;
+import org.jboss.interceptor.spi.model.InterceptionTypeRegistry;
 import org.jboss.interceptor.util.InterceptorMetadataException;
 import org.jboss.interceptor.util.ReflectionUtils;
 import org.slf4j.Logger;

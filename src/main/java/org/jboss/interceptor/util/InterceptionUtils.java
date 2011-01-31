@@ -28,6 +28,7 @@ import org.jboss.interceptor.proxy.InterceptorException;
 import org.jboss.interceptor.proxy.LifecycleMixin;
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.model.InterceptionType;
+import org.jboss.interceptor.spi.model.InterceptionTypeRegistry;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 
 /**
