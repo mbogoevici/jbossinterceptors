@@ -20,13 +20,17 @@ package org.jboss.interceptor.reader;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.interceptor.builder.MethodReference;
+import org.jboss.interceptor.proxy.InterceptorException;
 import org.jboss.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.interceptor.spi.model.InterceptionType;
 import org.jboss.interceptor.spi.model.InterceptionTypeRegistry;
+import org.jboss.interceptor.util.ReflectionUtils;
 
 /**
  * Represents information about an interceptor method
@@ -54,17 +58,10 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable
       }
    }
 
-   private DefaultMethodMetadata(Set<InterceptionType> interceptionTypes, MethodReference methodReference)
+   private DefaultMethodMetadata(Set<InterceptionType> interceptionTypes, Method method)
    {
       this.supportedInterceptorTypes = interceptionTypes;
-      try
-      {
-         this.javaMethod = methodReference.getDeclaringClass().getDeclaredMethod(methodReference.getMethodName(), methodReference.getParameterTypes());
-      }
-      catch (NoSuchMethodException e)
-      {
-         throw new IllegalStateException(e);
-      }
+      this.javaMethod = method;
    }
 
    public static <M> MethodMetadata of(M methodReference, AnnotatedMethodReader<M> methodReader)
@@ -95,7 +92,7 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable
 
    private Object writeReplace()
    {
-      return new DefaultMethodMetadataSerializationProxy(supportedInterceptorTypes, MethodReference.of(this, true));
+      return new DefaultMethodMetadataSerializationProxy(supportedInterceptorTypes, MethodReference.of(this));
    }
 
 
@@ -112,7 +109,25 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable
 
       private Object readResolve() throws ObjectStreamException
       {
-         return new DefaultMethodMetadata(supportedInterceptionTypes, methodReference);
+         ClassLoader classLoader = ReflectionUtils.getThreadContextClassLoader(true);
+         Method method = null;
+         try
+         {
+            String[] argumentTypeNames = methodReference.getMethodSignature().getArgumentTypeNames();
+            List<Class<?>> argumentTypes = new ArrayList<Class<?>>();
+            for (String argumentTypeName : argumentTypeNames)
+            {
+               argumentTypes.add(classLoader.loadClass(argumentTypeName));
+            }
+            Class<?>[] argumentTypesArray = argumentTypes.toArray(new Class<?>[argumentTypes.size()]);
+            method = classLoader.loadClass(methodReference.getDeclaringClassName())
+                        .getDeclaredMethod(methodReference.getMethodSignature().getMethodName(), argumentTypesArray);
+         }
+         catch (Exception e)
+         {
+            throw new InterceptorException(e);
+         }
+         return new DefaultMethodMetadata(supportedInterceptionTypes, method);
       }
 
    }
