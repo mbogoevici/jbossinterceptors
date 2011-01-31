@@ -56,5 +56,11 @@ public interface InterceptorMetadata<T> extends Serializable
     */
    boolean isEligible(InterceptionType interceptionType);
 
+   /**
+    * Whether the interceptor corresponding to this {@link InterceptorMetadata} is a target class.
+    * Relevant because of signature differences for lifecycle methods.
+    *
+    * @return
+    */
    boolean isTargetClass();
 }

@@ -42,7 +42,7 @@ public class ReflectionUtils
 
    public static Class<?> classForName(String className) throws ClassNotFoundException
    {
-      ClassLoader threadContextClassLoader = getThreadContextClassLoader();
+      ClassLoader threadContextClassLoader = getThreadContextClassLoader(true);
       if (threadContextClassLoader != null)
       {
          return threadContextClassLoader.loadClass(className);
@@ -53,15 +53,22 @@ public class ReflectionUtils
       }
    }
 
-   public static ClassLoader getThreadContextClassLoader()
+   public static ClassLoader getThreadContextClassLoader(boolean securely)
    {
-      return doSecurely(new PrivilegedAction<ClassLoader>()
+      if (securely)
       {
-         public ClassLoader run()
+         return doSecurely(new PrivilegedAction<ClassLoader>()
          {
-            return Thread.currentThread().getContextClassLoader();
-         }
-      });
+            public ClassLoader run()
+            {
+               return Thread.currentThread().getContextClassLoader();
+            }
+         });
+      }
+      else
+      {
+         return Thread.currentThread().getContextClassLoader();
+      }
    }
 
    private static <O> O doSecurely(final PrivilegedAction<O> action)

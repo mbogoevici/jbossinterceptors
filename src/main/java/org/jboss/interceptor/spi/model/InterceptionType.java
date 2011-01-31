@@ -18,6 +18,8 @@
 package org.jboss.interceptor.spi.model;
 
 /**
+ * Abstract representation of an interception type.
+ *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public enum InterceptionType

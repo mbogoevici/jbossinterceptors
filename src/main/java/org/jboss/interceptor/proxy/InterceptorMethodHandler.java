@@ -20,7 +20,7 @@ import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.interceptor.spi.model.InterceptionType;
-import org.jboss.interceptor.util.InterceptionTypeRegistry;
+import org.jboss.interceptor.spi.model.InterceptionTypeRegistry;
 import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.interceptor.util.ReflectionUtils;
 
