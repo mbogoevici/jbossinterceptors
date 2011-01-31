@@ -19,143 +19,90 @@ package org.jboss.interceptor.builder;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
-import org.jboss.interceptor.proxy.InterceptorException;
 import org.jboss.interceptor.spi.metadata.MethodMetadata;
-import org.jboss.interceptor.util.ReflectionUtils;
-
 
 /**
- * Wrapper for a method. Allows serializing references to methods.
- * 
+ * A method's reference: includes the declaring class name and the method signature
+ *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public class MethodReference implements Serializable
 {
-   private String methodName;
 
-   private Class<?>[] parameterTypes;
+   private String declaringClassName;
 
-   private Class<?> declaringClass;
+   private MethodSignature methodSignature;
 
-
-   public static MethodReference of(Method method, boolean withDeclaringClass)
+   /**
+    * @param declaringClassName
+    * @param methodSignature
+    */
+   public MethodReference(String declaringClassName, MethodSignature methodSignature)
    {
-      return new MethodReference(method, withDeclaringClass);
+      this.declaringClassName = declaringClassName;
+      this.methodSignature = methodSignature;
    }
 
-   public static MethodReference of(MethodMetadata method, boolean withDeclaringClass)
+   /**
+    * Builds the method reference for a given method
+    *
+    * @param method
+    * @return
+    */
+   public static MethodReference of(Method method)
    {
-      return new MethodReference(method.getJavaMethod(), withDeclaringClass);
+      return new MethodReference(method.getDeclaringClass().getName(), MethodSignature.of(method));
    }
 
-   private MethodReference(Method method, boolean withDeclaringClass)
+   public static MethodReference of(MethodMetadata method)
    {
-      this.methodName = method.getName();
-      this.parameterTypes = method.getParameterTypes();
-      if (withDeclaringClass)
-         this.declaringClass = method.getDeclaringClass();
+      return new MethodReference(method.getJavaMethod().getDeclaringClass().getName(), MethodSignature.of(method.getJavaMethod()));
    }
 
-   private MethodReference(String methodName, Class<?>[] parameterTypes, Class<?> declaringClass)
+
+   public String getDeclaringClassName()
    {
-      this.methodName = methodName;
-      this.parameterTypes = parameterTypes;
-      this.declaringClass = declaringClass;
+      return declaringClassName;
+   }
+
+   public MethodSignature getMethodSignature()
+   {
+      return methodSignature;
    }
 
    @Override
    public boolean equals(Object o)
    {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o)
+      {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass())
+      {
+         return false;
+      }
 
       MethodReference that = (MethodReference) o;
 
-      if (declaringClass != null ? !declaringClass.equals(that.declaringClass) : that.declaringClass != null)
+      if (declaringClassName != null ? !declaringClassName.equals(that.declaringClassName) : that.declaringClassName != null)
+      {
          return false;
-      if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null) return false;
-      if (!Arrays.equals(parameterTypes, that.parameterTypes)) return false;
+      }
+      if (methodSignature != null ? !methodSignature.equals(that.methodSignature) : that.methodSignature != null)
+      {
+         return false;
+      }
 
       return true;
-   }
-
-   public String getMethodName()
-   {
-      return methodName;
-   }
-
-   public Class<?>[] getParameterTypes()
-   {
-      return parameterTypes;
-   }
-
-   public Class<?> getDeclaringClass()
-   {
-      return declaringClass;
    }
 
    @Override
    public int hashCode()
    {
-      int result = methodName != null ? methodName.hashCode() : 0;
-      result = 31 * result + (parameterTypes != null ? Arrays.hashCode(parameterTypes) : 0);
-      result = 31 * result + (declaringClass != null ? declaringClass.hashCode() : 0);
+      int result = declaringClassName != null ? declaringClassName.hashCode() : 0;
+      result = 31 * result + (methodSignature != null ? methodSignature.hashCode() : 0);
       return result;
    }
 
-   private Object writeReplace()
-   {
-      return new MethodHolderSerializationProxy(this);
-   }
-
-   static class MethodHolderSerializationProxy implements Serializable
-   {
-      private String className;
-      private String methodName;
-      private String parameterClassNames[];
-
-      MethodHolderSerializationProxy(MethodReference methodReference)
-      {
-         className = methodReference.declaringClass != null? methodReference.declaringClass.getName() : null;
-         methodName = methodReference.methodName;
-         if (methodReference.parameterTypes != null)
-         {
-            parameterClassNames = new String[methodReference.parameterTypes.length];
-            int i = 0;
-            for (Class<?> parameterType: methodReference.parameterTypes)
-            {
-               parameterClassNames[i++] = parameterType.getName();
-            }
-         }
-      }
-      
-      private Object readResolve()
-      {
-
-         try
-         {
-            Class<?>[] parameterTypes = null;
-            if (parameterClassNames != null)
-            {
-               parameterTypes = new Class<?>[parameterClassNames.length];
-               for (int i = 0; i<parameterClassNames.length; i++)
-               {
-                  parameterTypes[i] = ReflectionUtils.classForName(parameterClassNames[i]);
-               }
-            }
-            Class<?> declaringClass = null;
-            if (className != null)
-            {
-               declaringClass = ReflectionUtils.classForName(className);
-            }
-            return new MethodReference(methodName, parameterTypes, declaringClass);
-         }
-         catch (ClassNotFoundException e)
-         {
-            throw new InterceptorException("Error while deserializing intercepted instance", e);
-         }
-      }
-   }
 }

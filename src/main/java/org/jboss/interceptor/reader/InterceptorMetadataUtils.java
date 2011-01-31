@@ -11,7 +11,7 @@ import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
-import org.jboss.interceptor.builder.MethodReference;
+import org.jboss.interceptor.builder.MethodSignature;
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.interceptor.spi.metadata.InterceptorReference;
@@ -139,15 +139,17 @@ public class InterceptorMetadataUtils
    {
       Map<InterceptionType, List<MethodMetadata>> methodMap = new HashMap<InterceptionType, List<MethodMetadata>>();
       ClassMetadata<?> currentClass = interceptorClass;
-      Set<MethodReference> foundMethods = new HashSet<MethodReference>();
+      Set<MethodSignature> foundMethods = new HashSet<MethodSignature>();
       do
       {
          Set<InterceptionType> detectedInterceptorTypes = new HashSet<InterceptionType>();
 
          for (MethodMetadata method : currentClass.getDeclaredMethods())
          {
-            MethodReference methodReference = MethodReference.of(method, Modifier.isPrivate(method.getJavaMethod().getModifiers()));
-            if (!foundMethods.contains(methodReference))
+            MethodSignature methodReference = MethodSignature.of(method.getJavaMethod());
+            // ignore a method if a signature has been found in a subclass already - it means that it is overridden
+            // however, if the method is private, don't ignore it - private methods are never overridden
+            if (!foundMethods.contains(methodReference) || Modifier.isPrivate(method.getJavaMethod().getModifiers()))
             {
                for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes())
                {
@@ -169,7 +171,7 @@ public class InterceptorMetadataUtils
                      // final methods are treated separately, as a final method cannot override another method nor be
                      // overridden
                      ReflectionUtils.ensureAccessible(method.getJavaMethod());
-                     if (!foundMethods.contains(methodReference));
+                     if (!foundMethods.contains(methodReference) && Modifier.isPrivate(method.getJavaMethod().getModifiers()));
                      {
                         methodMap.get(interceptionType).add(0, method);
                      }
@@ -181,7 +183,7 @@ public class InterceptorMetadataUtils
          }
          currentClass = currentClass.getSuperclass();
       }
-      while (currentClass != null && !OBJECT_CLASS_NAME.equals(currentClass.getJavaClass()));
+      while (currentClass != null);
       return methodMap;
    }
 }

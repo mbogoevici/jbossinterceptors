@@ -167,7 +167,7 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I>
 
    private static MethodReference methodHolder(Method method)
    {
-      return MethodReference.of(method, true);
+      return MethodReference.of(method);
    }
 
 }
