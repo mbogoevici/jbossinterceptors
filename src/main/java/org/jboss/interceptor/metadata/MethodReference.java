@@ -19,11 +19,6 @@ package org.jboss.interceptor.metadata;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-
-import org.jboss.interceptor.exceptions.InterceptorException;
-import org.jboss.interceptor.util.ReflectionUtils;
-
 
 /**
  * A method's reference: includes the declaring class name and the method signature
@@ -32,20 +27,32 @@ import org.jboss.interceptor.util.ReflectionUtils;
  */
 public class MethodReference implements Serializable
 {
+
    private String declaringClassName;
 
    private MethodSignature methodSignature;
 
-   public static MethodReference of(Method method)
-   {
-      return new MethodReference(method.getDeclaringClass().getName(), MethodSignature.of(method));
-   }
-
+   /**
+    * @param declaringClassName
+    * @param methodSignature
+    */
    public MethodReference(String declaringClassName, MethodSignature methodSignature)
    {
       this.declaringClassName = declaringClassName;
       this.methodSignature = methodSignature;
    }
+
+   /**
+    * Builds the method reference for a given method
+    *
+    * @param method
+    * @return
+    */
+   public static MethodReference of(Method method)
+   {
+      return new MethodReference(method.getDeclaringClass().getName(), MethodSignature.of(method));
+   }
+
 
    public String getDeclaringClassName()
    {

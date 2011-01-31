@@ -1,7 +1,7 @@
 package org.jboss.interceptor.customInvocationContext;
 
 import junit.framework.Assert;
-import org.jboss.interceptor.interceptionchain.ClassLoaderReferenceResolver;
+import org.jboss.interceptor.invocation.ClassLoaderReferenceResolver;
 import org.jboss.interceptor.invocation.MethodReferenceResolver;
 import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.invocation.InterceptionChain;

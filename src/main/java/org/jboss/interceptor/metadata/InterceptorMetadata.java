@@ -23,9 +23,8 @@ import java.util.List;
 import org.jboss.interceptor.model.InterceptionType;
 
 /**
- * Interceptor metadata describes the capabilities of an interceptor. It assumes that the interceptor is
+ * Describes the capabilities of an interceptor. It assumes that the interceptor is
  * backed by a class
- * are supported by this interceptor and what are the interceptor methods that shou
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
@@ -59,7 +58,7 @@ public interface InterceptorMetadata<T> extends Serializable
    boolean isEligible(InterceptionType interceptionType);
 
    /**
-    * Indicates whether this {@link }
+    * Indicates whether this interceptor metadata has been creat
     * @return
     */
    boolean isTargetClass();

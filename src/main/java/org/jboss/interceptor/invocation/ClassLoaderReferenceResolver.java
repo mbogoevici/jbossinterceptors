@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-package org.jboss.interceptor.interceptionchain;
+package org.jboss.interceptor.invocation;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import org.jboss.interceptor.exceptions.InterceptorException;
-import org.jboss.interceptor.invocation.MethodReferenceResolver;
 import org.jboss.interceptor.metadata.MethodReference;
 import org.jboss.interceptor.metadata.MethodSignature;
 
 /**
+ * A {@link MethodReferenceResolver} that uses a predefined classloader to resolve references
+ *
  * @author Marius Bogoevici
  */
 public class ClassLoaderReferenceResolver implements MethodReferenceResolver
@@ -37,6 +38,9 @@ public class ClassLoaderReferenceResolver implements MethodReferenceResolver
       this.classLoader = classLoader;
    }
 
+   /**
+    * {@inheritDoc}
+    */
    public Method resolve(MethodReference methodReference)
    {
       try

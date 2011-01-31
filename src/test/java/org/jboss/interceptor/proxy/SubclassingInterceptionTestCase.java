@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javassist.util.proxy.ProxyObject;
-import org.jboss.interceptor.interceptionchain.ClassLoaderReferenceResolver;
+import org.jboss.interceptor.invocation.ClassLoaderReferenceResolver;
 import org.jboss.interceptor.invocation.MethodReferenceResolver;
 import org.jboss.interceptor.metadata.MethodSignature;
 import org.jboss.interceptor.model.InterceptionModelBuilder;

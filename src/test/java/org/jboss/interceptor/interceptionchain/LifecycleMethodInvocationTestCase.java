@@ -27,6 +27,7 @@ import junit.framework.Assert;
 import org.jboss.interceptor.invocation.DefaultInvocationContextFactory;
 import org.jboss.interceptor.invocation.InterceptionChain;
 import org.jboss.interceptor.invocation.InterceptorInvocation;
+import org.jboss.interceptor.invocation.ClassLoaderReferenceResolver;
 import org.jboss.interceptor.invocation.MethodReferenceResolver;
 import org.jboss.interceptor.invocation.SimpleInterceptionChain;
 import org.jboss.interceptor.reader.DefaultMetadataCachingReader;

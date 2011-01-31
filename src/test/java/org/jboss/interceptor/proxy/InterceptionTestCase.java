@@ -28,7 +28,7 @@ import java.util.Map;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
-import org.jboss.interceptor.interceptionchain.ClassLoaderReferenceResolver;
+import org.jboss.interceptor.invocation.ClassLoaderReferenceResolver;
 import org.jboss.interceptor.invocation.MethodReferenceResolver;
 import org.jboss.interceptor.metadata.MethodSignature;
 import org.jboss.interceptor.model.InterceptionModelBuilder;
@@ -104,13 +104,13 @@ public class InterceptionTestCase
    private InterceptorInstantiator<?, ClassMetadata<?>> interceptorInstantiator;
    
    MetadataCachingReader metadataCachingReader = new DefaultMetadataCachingReader();
+
    private MethodReferenceResolver methodReferenceResolver;
 
    @Before
    public void setUp()
    {
       interceptorInstantiator = new DirectClassInterceptorInstantiator();
-
       methodReferenceResolver = new ClassLoaderReferenceResolver(Thread.currentThread().getContextClassLoader());
    }
 

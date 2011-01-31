@@ -17,7 +17,7 @@
 
 package org.jboss.interceptor.reentrant;
 
-import org.jboss.interceptor.interceptionchain.ClassLoaderReferenceResolver;
+import org.jboss.interceptor.invocation.ClassLoaderReferenceResolver;
 import org.jboss.interceptor.invocation.MethodReferenceResolver;
 import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.invocation.DefaultInvocationContextFactory;
