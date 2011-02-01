@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
+import org.jboss.interceptor.builder.MethodSignature;
 import org.jboss.interceptor.reader.InterceptorMetadataUtils;
 import org.jboss.interceptor.spi.context.InvocationContextFactory;
 import org.jboss.interceptor.spi.instance.InterceptorInstantiator;
@@ -49,8 +50,8 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable
    public InterceptorMethodHandler(Object targetInstance,
                                    ClassMetadata<?> targetClassMetadata,
                                    InterceptionModel<ClassMetadata<?>, ?> interceptionModel,
-                                   InterceptorInstantiator<?,?> interceptorInstantiator,
-                                   InvocationContextFactory invocationContextFactory )
+                                   InterceptorInstantiator<?, ?> interceptorInstantiator,
+                                   InvocationContextFactory invocationContextFactory)
    {
       this.targetInstance = targetInstance;
       this.invocationContextFactory = invocationContextFactory;
@@ -118,7 +119,7 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable
    private Object executeInterception(Object self, Method proceedingMethod, Method thisMethod, Object[] args, InterceptionType interceptionType) throws Throwable
    {
 
-      List<? extends InterceptorMetadata<?>> interceptorList = interceptionModel.getInterceptors(interceptionType, thisMethod);
+      List<? extends InterceptorMetadata<?>> interceptorList = interceptionType.isLifecycleCallback() ? interceptionModel.getInterceptors(interceptionType) : interceptionModel.getInterceptors(interceptionType, MethodSignature.of(thisMethod));
       Collection<InterceptorInvocation<?>> interceptorInvocations = new ArrayList<InterceptorInvocation<?>>();
       for (InterceptorMetadata interceptorReference : interceptorList)
       {

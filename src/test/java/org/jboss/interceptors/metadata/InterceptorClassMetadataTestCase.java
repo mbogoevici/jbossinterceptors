@@ -184,7 +184,7 @@ public class InterceptorClassMetadataTestCase
    }
 
    /**
-    * Tests that the {@link InterceptorMetadata#getInterceptorClass()} returns the correct
+    * Tests that {@link org.jboss.interceptor.spi.metadata.InterceptorMetadata#getInterceptorReference()} returns the correct
     * {@link ClassMetadata}
     */
    @Test
@@ -192,7 +192,7 @@ public class InterceptorClassMetadataTestCase
    {
       InterceptorMetadata interceptorWithAllInterceptionTypes = metadataCachingReader.getInterceptorMetadata(InterceptorWithAllMethods.class);
       
-      ClassMetadata<?> interceptorClass = interceptorWithAllInterceptionTypes.getInterceptorClass();
+      ClassMetadata<?> interceptorClass = interceptorWithAllInterceptionTypes.getInterceptorReference().getClassMetadata();
       Assert.assertNotNull("ClassMetadata not found on interceptor metadata created out of class: " + InterceptorWithAllMethods.class, interceptorClass);
       Assert.assertEquals("Unexpected ClassMetadata found on interceptor metadata created out of class: " + InterceptorWithAllMethods.class, InterceptorWithAllMethods.class.getName(), interceptorClass.getClassName());
    }
