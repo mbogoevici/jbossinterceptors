@@ -16,14 +16,6 @@
  */
 package org.jboss.interceptor.builder;
 
-import static org.jboss.interceptor.spi.model.InterceptionType.POST_ACTIVATE;
-import static org.jboss.interceptor.spi.model.InterceptionType.POST_CONSTRUCT;
-import static org.jboss.interceptor.spi.model.InterceptionType.PRE_DESTROY;
-import static org.jboss.interceptor.spi.model.InterceptionType.PRE_PASSIVATE;
-
-import java.lang.reflect.Method;
-
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.interceptor.spi.model.InterceptionType;
@@ -85,12 +77,12 @@ public class InterceptionModelBuilder<T, I>
       return new MethodInterceptorDescriptor(null, InterceptionType.values());
    }
 
-   public MethodInterceptorDescriptor interceptAroundInvoke(Method m)
+   public MethodInterceptorDescriptor interceptAroundInvoke(MethodSignature m)
    {
       return new MethodInterceptorDescriptor(m, InterceptionType.AROUND_INVOKE);
    }
 
-   public MethodInterceptorDescriptor interceptAroundTimeout(Method m)
+   public MethodInterceptorDescriptor interceptAroundTimeout(MethodSignature m)
    {
       return new MethodInterceptorDescriptor(m, InterceptionType.AROUND_TIMEOUT);
    }
@@ -115,28 +107,28 @@ public class InterceptionModelBuilder<T, I>
       return new MethodInterceptorDescriptor(null, InterceptionType.POST_ACTIVATE);
    }
 
-   public void ignoreGlobalInterceptors(Method m)
+   public void ignoreGlobalInterceptors(MethodSignature m)
    {
-      this.interceptionModel.setIgnoresGlobals(m, true);
+      this.interceptionModel.excludeGlobalInterceptors(m);
    }
 
    public final class MethodInterceptorDescriptor
    {
-      private Method method;
+      private MethodSignature methodSignature;
 
       private InterceptionType[] interceptionTypes;
 
-      public MethodInterceptorDescriptor(Method m, InterceptionType... interceptionType)
+      public MethodInterceptorDescriptor(MethodSignature methodSignature, InterceptionType... interceptionType)
       {
-         this.method = m;
+         this.methodSignature = methodSignature;
          this.interceptionTypes = interceptionType;
       }
 
       public void with(InterceptorMetadata... interceptors)
       {
-         for (InterceptionType interceptionType: interceptionTypes)
+         for (InterceptionType interceptionType : interceptionTypes)
          {
-            InterceptionModelBuilder.this.interceptionModel.appendInterceptors(interceptionType, method, interceptors);
+            InterceptionModelBuilder.this.interceptionModel.appendInterceptors(interceptionType, methodSignature, interceptors);
          }
       }
    }

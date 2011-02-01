@@ -17,17 +17,17 @@
 
 package org.jboss.interceptor.spi.model;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
-import java.io.Serializable;
 
+import org.jboss.interceptor.builder.MethodSignature;
 import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.interceptor.spi.metadata.MethodMetadata;
 
 /**
  * Describes the {@link org.jboss.interceptor.spi.metadata.InterceptorMetadata}s that apply to a particular entity.
- *
- * Implementors must implement equals() and hashcode() consistently
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
@@ -38,21 +38,35 @@ public interface InterceptionModel<T, I> extends Serializable
     * Returns the interceptors applicable for the given interception type and method
     *
     * @param interceptionType
-    * @param method - null if the interception type is lifecycle
+    * @param method           - null if the interception type is lifecycle
     * @return list of interceptors
     * @throws IllegalArgumentException if interceptionType is business method or around timeout
-    * but method is null, as well as if interceptionType is callback and method is not null
+    *                                  but method is null, as well as if interceptionType is callback and method is not null
     */
-   public List<InterceptorMetadata<I>> getInterceptors(InterceptionType interceptionType, Method method);
+   public List<InterceptorMetadata<I>> getInterceptors(InterceptionType interceptionType, MethodSignature method);
+
+   /**
+    * Returns the interceptors applicable for a lifecycle {@link InterceptionType}
+    *
+    * @param interceptionType
+    * @return
+    */
+   List<InterceptorMetadata<I>> getInterceptors(InterceptionType interceptionType);
 
    /**
     * Returns all interceptor classes that are applicable to the given intercepted entity
+    *
     * @return all interceptors
     */
    public Set<InterceptorMetadata<I>> getAllInterceptors();
 
+   public boolean isExcludingDefaultInterceptorsGlobally();
+
+   public boolean isExcludingDefaultInterceptors(MethodSignature methodSignature);
+
+   public boolean isExcludingGlobalInterceptors(MethodSignature methodSignature);
+
    /**
-    * 
     * @return the intercepted entity
     */
    public T getInterceptedEntity();
