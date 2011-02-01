@@ -60,92 +60,104 @@ public class InterceptorMetadataUtils
       return new SimpleInterceptorMetadata(ClassMetadataInterceptorReference.of(classMetadata), true, buildInterceptorMethodMap(classMetadata, true));
    }
 
-   public static boolean isInterceptorMethod(InterceptionType interceptionType, MethodMetadata method, boolean forTargetClass)
+   public static boolean validateInterceptorMethod(InterceptionType interceptionType, MethodMetadata method, boolean forTargetClass)
    {
 
+      // is the method annotated with an interceptor annotation?
       if (!method.getSupportedInterceptionTypes().contains(interceptionType))
       {
          return false;
       }
 
+      int parameterCount = method.getMethodReference().getMethodSignature().getArgumentTypeNames().length;
+
+      // the method is annotated correctly, but is its signature valid?
       if (interceptionType.isLifecycleCallback())
       {
-         if (!Void.TYPE.equals(method.getReturnType()))
+         if (!isReturningVoid(method))
          {
-            if (LOG.isWarnEnabled())
-            {
-              LOG.warn(getStandardIgnoredMessage(interceptionType, method.getJavaMethod()) + "does not have a void return type");
-            }
-            return false;
+            throw new InterceptorMethodSignatureException(getErrorMessage(interceptionType, method.getJavaMethod()) + "does not have a void return type");
          }
 
-         Class<?>[] parameterTypes = method.getJavaMethod().getParameterTypes();
 
-         if (forTargetClass && parameterTypes.length != 0)
+         if (forTargetClass && parameterCount != 0)
          {
-            if (LOG.isWarnEnabled())
-            {
-               LOG.warn(getStandardIgnoredMessage(interceptionType, method.getJavaMethod()) + "is defined on the target class and does not have 0 arguments");
-            }
-            return false;
+            throw new InterceptorMethodSignatureException(getErrorMessage(interceptionType, method.getJavaMethod()) + "is defined on the target class and does not have 0 arguments");
          }
 
-         if (!forTargetClass && parameterTypes.length != 1)
+         if (!forTargetClass && parameterCount != 1)
          {
-            if (LOG.isWarnEnabled())
-            {
-               LOG.warn(getStandardIgnoredMessage(interceptionType, method.getJavaMethod()) + "does not have exactly one parameter");
-            }
-            return false;
+            throw new InterceptorMethodSignatureException(getErrorMessage(interceptionType, method.getJavaMethod()) + "does not have exactly one parameter");
          }
 
-         if (parameterTypes.length == 1 && !InvocationContext.class.isAssignableFrom(parameterTypes[0]))
+         if (!forTargetClass && !hasSingleInvocationContextArgument(method))
          {
-            if (LOG.isWarnEnabled())
-            {
-               LOG.warn(getStandardIgnoredMessage(interceptionType, method.getJavaMethod()) + "its single argument is not a " + InvocationContext.class.getName());
-            }
-            return false;
+            throw new InterceptorMethodSignatureException(getErrorMessage(interceptionType, method.getJavaMethod()) + "its single argument is not a " + InvocationContext.class.getName());
          }
-
-         return true;
       }
       else
       {
-         if (!Object.class.equals(method.getReturnType()))
+         if (!isReturningObject(method))
          {
-            if (LOG.isWarnEnabled())
-            {
-               LOG.warn(getStandardIgnoredMessage(interceptionType, method.getJavaMethod()) + "does not return a " + OBJECT_CLASS_NAME);
-            }
-            return false;
+            throw new InterceptorMethodSignatureException(getErrorMessage(interceptionType, method.getJavaMethod()) + "does not return a " + OBJECT_CLASS_NAME);
          }
 
-         Class<?>[] parameterTypes = method.getJavaMethod().getParameterTypes();
+         String[] parameterTypes = method.getMethodReference().getMethodSignature().getArgumentTypeNames();
 
          if (parameterTypes.length != 1)
          {
-            if (LOG.isWarnEnabled())
-            {
-               LOG.debug(getStandardIgnoredMessage(interceptionType, method.getJavaMethod()) + "does not have exactly 1 parameter");
-            }
-            return false;
+            throw new InterceptorMethodSignatureException(getErrorMessage(interceptionType, method.getJavaMethod()) + "does not have exactly 1 parameter");
          }
 
-         if (!InvocationContext.class.isAssignableFrom(parameterTypes[0]))
+         if (!hasSingleInvocationContextArgument(method))
          {
-            if (LOG.isWarnEnabled())
-            {
-               LOG.debug(getStandardIgnoredMessage(interceptionType, method.getJavaMethod()) + "does not have a " + InvocationContext.class.getName() + " parameter ");
-            }
-            return false;
+            throw new InterceptorMethodSignatureException(getErrorMessage(interceptionType, method.getJavaMethod()) + "does not have a " + InvocationContext.class.getName() + " parameter ");
          }
+      }
+      return true;
+   }
 
-         return true;
+   private static boolean isReturningObject(MethodMetadata method)
+   {
+      if (!method.isDeferringReflection())
+      {
+         return Object.class.equals(method.getJavaMethod().getReturnType());
+      }
+      else
+      {
+         return OBJECT_CLASS_NAME.equals(method.getMethodReference().getReturnTypeName());
       }
    }
 
-   static String getStandardIgnoredMessage(InterceptionType interceptionType, Method method)
+    private static boolean isReturningVoid(MethodMetadata method)
+   {
+      if (!method.isDeferringReflection())
+      {
+         return void.class.equals(method.getJavaMethod().getReturnType());
+      }
+      else
+      {
+         return "void".equals(method.getMethodReference().getReturnTypeName());
+      }
+   }
+
+   private static boolean hasSingleInvocationContextArgument(MethodMetadata methodMetadata)
+   {
+      // if the reflective information is not available on the method metadata object, we check the argument type by name
+      // otherwise we allow for subclasses of InvocationContext to be present as well
+      if (methodMetadata.isDeferringReflection())
+      {
+         return methodMetadata.getMethodReference().getMethodSignature().getArgumentTypeNames().length == 1
+               && methodMetadata.getMethodReference().getMethodSignature().getArgumentTypeNames()[0].equals(InvocationContext.class.getName());
+      }
+      else
+      {
+         return methodMetadata.getJavaMethod().getParameterTypes().length == 1
+               && InvocationContext.class.isAssignableFrom(methodMetadata.getJavaMethod().getParameterTypes()[0]);
+      }
+   }
+
+   static String getErrorMessage(InterceptionType interceptionType, Method method)
    {
       return "Method " + method.getName() + " defined on class " + method.getDeclaringClass().getName()
             + " will not be used for interception, since it is not defined according to the specification. It is annotated with @"
@@ -170,7 +182,7 @@ public class InterceptorMetadataUtils
             {
                for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes())
                {
-                  if (isInterceptorMethod(interceptionType, method, forTargetClass))
+                  if (validateInterceptorMethod(interceptionType, method, forTargetClass))
                   {
                      if (methodMap.get(interceptionType) == null)
                      {
@@ -188,7 +200,10 @@ public class InterceptorMetadataUtils
                      // final methods are treated separately, as a final method cannot override another method nor be
                      // overridden
                      ReflectionUtils.ensureAccessible(method.getJavaMethod());
-                     if (!foundMethods.contains(methodReference) && Modifier.isPrivate(method.getJavaMethod().getModifiers()));
+                     if (!foundMethods.contains(methodReference) && Modifier.isPrivate(method.getJavaMethod().getModifiers()))
+                     {
+                        ;
+                     }
                      {
                         methodMap.get(interceptionType).add(0, method);
                      }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2011, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -17,15 +17,27 @@
 
 package org.jboss.interceptor.reader;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
 /**
- * Allows entities to define their own strategy of reading metadata from an object
+ * @author Marius Bogoevici
  */
-public interface AnnotatedMethodReader<M>
+public class InterceptorMethodSignatureException extends RuntimeException
 {
-   Annotation getAnnotation(Class<? extends Annotation> annotationClass, M methodReference);
+   public InterceptorMethodSignatureException()
+   {
+   }
 
-   Method getJavaMethod(M methodReference);
+   public InterceptorMethodSignatureException(String s)
+   {
+      super(s);
+   }
+
+   public InterceptorMethodSignatureException(String s, Throwable throwable)
+   {
+      super(s, throwable);
+   }
+
+   public InterceptorMethodSignatureException(Throwable throwable)
+   {
+      super(throwable);
+   }
 }

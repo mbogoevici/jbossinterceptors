@@ -27,6 +27,8 @@ import java.util.List;
  * A simplified representation of a method signature, that can be used as a key instead of the
  * {@link Method} itself. Argument types are represented by {@link String values}
  *
+ * Note: equals() and hashCode() will be based only the method name and argument types
+ *
  * @author Marius Bogoevici
  */
 public class MethodSignature implements Serializable
@@ -57,6 +59,7 @@ public class MethodSignature implements Serializable
       String methodName = m.getName();
       Class<?>[] parameterTypes = m.getParameterTypes();
       String[] argTypeNames = toNames(parameterTypes);
+
       return new MethodSignature(methodName, argTypeNames);
    }
 
