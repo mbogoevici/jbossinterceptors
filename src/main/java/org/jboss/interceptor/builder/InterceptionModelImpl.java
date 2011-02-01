@@ -73,7 +73,7 @@ public class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T
     */
    public List<InterceptorMetadata<I>> getInterceptors(InterceptionType interceptionType, MethodMetadata method)
    {
-      return getInterceptors(interceptionType, MethodSignature.of(method.getJavaMethod()));
+      return getInterceptors(interceptionType, method.getMethodReference().getMethodSignature());
    }
 
    public List<InterceptorMetadata<I>> getInterceptors(InterceptionType interceptionType, Method method)
