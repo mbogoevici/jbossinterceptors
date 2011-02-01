@@ -28,11 +28,32 @@ import java.io.Serializable;
  */
 public interface ClassMetadata<T> extends Serializable
 {
+   /**
+    * Behaves similarly to {@link Class#getDeclaredMethods()}, but returns {@link MethodMetadata} allowing
+    * implementors to use other mechanisms than reflection to provide information about methods
+    *
+    * @return
+    */
    Iterable<MethodMetadata> getDeclaredMethods();
-   
+
+   /**
+    *  Return true if the implementation will return class data lazily (i.e. when invoking {@link #getJavaClass()})
+    *  Implementations that return true may not provide information about the actual {@link Class} at all, or invoking
+    * {@link #getJavaClass()} may be expensive.
+    *
+    */
+   boolean isDeferringReflection();
+
+   /**
+    * Return the actual class that is backing the ClassMetadata, if available
+    *
+    * @return
+    *
+    * Note: this method is optional. If not supported or expensive, {@link #isDeferringReflection()} must return true
+    */
    Class<T> getJavaClass();
    
-   String getClassName();
+   String getJavaClassName();
 
    ClassMetadata<?> getSuperclass();
 

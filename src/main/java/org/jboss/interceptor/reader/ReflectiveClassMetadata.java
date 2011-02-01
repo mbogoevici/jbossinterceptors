@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2011, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -46,7 +46,7 @@ public class ReflectiveClassMetadata<T> implements ClassMetadata<T>, Serializabl
       return new ReflectiveClassMetadata<T>(clazz);
    }
 
-   public String getClassName()
+   public String getJavaClassName()
    {
       return clazz.getName();
    }
@@ -62,7 +62,7 @@ public class ReflectiveClassMetadata<T> implements ClassMetadata<T>, Serializabl
                 @Override
                 protected MethodMetadata wrapObject(Method method)
                 {
-                   return DefaultMethodMetadata.of(method);
+                   return ReflectiveMethodMetadata.of(method);
                 }
              };
          }
@@ -72,7 +72,12 @@ public class ReflectiveClassMetadata<T> implements ClassMetadata<T>, Serializabl
    public Class<T> getJavaClass()
    {
       return clazz;
-   }   
+   }
+
+   public boolean isDeferringReflection()
+   {
+      return false;
+   }
 
    @SuppressWarnings({ "unchecked", "rawtypes" })
    public ClassMetadata<?> getSuperclass()

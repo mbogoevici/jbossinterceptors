@@ -194,7 +194,7 @@ public class InterceptorClassMetadataTestCase
       
       ClassMetadata<?> interceptorClass = interceptorWithAllInterceptionTypes.getInterceptorReference().getClassMetadata();
       Assert.assertNotNull("ClassMetadata not found on interceptor metadata created out of class: " + InterceptorWithAllMethods.class, interceptorClass);
-      Assert.assertEquals("Unexpected ClassMetadata found on interceptor metadata created out of class: " + InterceptorWithAllMethods.class, InterceptorWithAllMethods.class.getName(), interceptorClass.getClassName());
+      Assert.assertEquals("Unexpected ClassMetadata found on interceptor metadata created out of class: " + InterceptorWithAllMethods.class, InterceptorWithAllMethods.class.getName(), interceptorClass.getJavaClassName());
    }
 
 

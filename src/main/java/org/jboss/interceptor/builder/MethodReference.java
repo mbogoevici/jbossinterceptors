@@ -34,14 +34,17 @@ public class MethodReference implements Serializable
 
    private MethodSignature methodSignature;
 
+   private String returnTypeName;
+
    /**
     * @param declaringClassName
     * @param methodSignature
     */
-   public MethodReference(String declaringClassName, MethodSignature methodSignature)
+   public MethodReference(String declaringClassName, MethodSignature methodSignature, String returnType)
    {
       this.declaringClassName = declaringClassName;
       this.methodSignature = methodSignature;
+      this.returnTypeName = returnType;
    }
 
    /**
@@ -52,14 +55,8 @@ public class MethodReference implements Serializable
     */
    public static MethodReference of(Method method)
    {
-      return new MethodReference(method.getDeclaringClass().getName(), MethodSignature.of(method));
+      return new MethodReference(method.getDeclaringClass().getName(), MethodSignature.of(method), method.getReturnType().getName());
    }
-
-   public static MethodReference of(MethodMetadata method)
-   {
-      return new MethodReference(method.getJavaMethod().getDeclaringClass().getName(), MethodSignature.of(method.getJavaMethod()));
-   }
-
 
    public String getDeclaringClassName()
    {
@@ -105,4 +102,8 @@ public class MethodReference implements Serializable
       return result;
    }
 
+   public String getReturnTypeName()
+   {
+      return returnTypeName;
+   }
 }

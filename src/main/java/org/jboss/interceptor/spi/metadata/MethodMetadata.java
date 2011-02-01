@@ -17,6 +17,7 @@
 
 package org.jboss.interceptor.spi.metadata;
 
+import org.jboss.interceptor.builder.MethodReference;
 import org.jboss.interceptor.spi.model.InterceptionType;
 
 import java.lang.reflect.Method;
@@ -31,10 +32,35 @@ import java.util.Set;
  */
 public interface MethodMetadata
 {
+
+   /**
+    *  Return true if the implementation will return class data lazily (i.e. when invoking {@link #getJavaMethod()})
+    *  Implementations that return true may not provide information about the actual {@link Method} at all, or invoking
+    * {@link #getJavaMethod()} may be expensive.
+    *
+    */
+   boolean isDeferringReflection();
+
+   /**
+    * Return the {@link Method} that is backing this instance, if available
+    *
+    * @return
+    *
+    * Note: this method is optional. If not supported or expensive, {@link #isDeferringReflection()} must return true
+    */
    Method getJavaMethod();
 
-   Set<InterceptionType> getSupportedInterceptionTypes();
+   /**
+    * A reference to the method that is backing this instance
+    * @return
+    */
+   MethodReference getMethodReference();
 
-   Class<?> getReturnType();
+   /**
+    * The interception types that this method supports
+    *
+    * @return
+    */
+   Set<InterceptionType> getSupportedInterceptionTypes();
    
 }
