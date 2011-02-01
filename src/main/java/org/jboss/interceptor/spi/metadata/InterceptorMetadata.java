@@ -23,34 +23,33 @@ import java.util.List;
 import org.jboss.interceptor.spi.model.InterceptionType;
 
 /**
- * This class is parametrized for
+ * Describes the capabilities of an interceptor. It assumes that the interceptor is
+ * backed by a class
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public interface InterceptorMetadata<T> extends Serializable
 {
    /**
-    * Returns the class for which this interceptor metadata was created 
-    * 
+    * The interceptor for which this {@link InterceptorMetadata} has been created
+    *
     * @return
     */
    InterceptorReference<T> getInterceptorReference();
 
-   ClassMetadata<?> getInterceptorClass();
-   
    /**
-    * Returns the list of interceptor methods of this class for a given 
+    * Returns the sequence of interceptor methods that should be invoked on this interceptor for a given
     * interception type.
     *
     * @param interceptionType
     * @return a list of methods
     */
    List<MethodMetadata> getInterceptorMethods(InterceptionType interceptionType);
-   
+
    /**
     * Returns true if the interceptor corresponding to this {@link InterceptorMetadata}
     * has interceptor methods for the given <code>interceptionType</code>. Else returns false.
-    *   
+    *
     * @param interceptionType The {@link InterceptionType}
     * @return
     */
